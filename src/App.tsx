@@ -4,6 +4,7 @@ import data from './data/questions.json';
 import QuestionStep from './components/QuestionStep';
 import ResultStep from './components/ResultStep';
 import ProgressBar from './components/ProgressBar';
+import ThemeToggle from './components/ThemeToggle';
 import './App.css';
 
 export type Answers = Record<string, string | string[]>;
@@ -76,7 +77,9 @@ function App() {
   }, [answers, calculatePrice]);
 
   return (
-    <div className="app" style={{ '--accent': data.config.accentColor } as React.CSSProperties}>
+    <div className="app">
+      <ThemeToggle />
+
       {!isResult && currentStep > 0 && (
         <ProgressBar current={currentStep} total={totalSteps} />
       )}
@@ -93,7 +96,7 @@ function App() {
             <ResultStep
               key="result"
               price={calculatePrice()}
-              currency={data.pricing.currency || data.config.currency}
+              currency={(data.pricing as any).currency || data.config.currency}
               label={data.pricing.label}
               disclaimer={data.pricing.disclaimer}
               submitted={submitted}

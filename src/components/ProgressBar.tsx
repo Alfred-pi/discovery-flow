@@ -9,13 +9,16 @@ export default function ProgressBar({ current, total }: Props) {
   const progress = (current / total) * 100;
 
   return (
-    <div className="progress-bar-container">
-      <motion.div
-        className="progress-bar-fill"
-        initial={false}
-        animate={{ width: `${progress}%` }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-      />
+    <div className="progress-container">
+      <div className="progress-track">
+        <motion.div
+          className="progress-fill"
+          initial={false}
+          animate={{ width: `${progress}%` }}
+          transition={{ type: 'spring', stiffness: 200, damping: 30 }}
+        />
+      </div>
+      <span className="progress-label">{current}/{total}</span>
     </div>
   );
 }

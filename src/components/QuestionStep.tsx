@@ -1,10 +1,27 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const variants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? -80 : 80, opacity: 0 }),
+const pageVariants = {
+  enter: (dir: number) => ({ x: dir > 0 ? 60 : -60, opacity: 0, scale: 0.98 }),
+  center: { x: 0, opacity: 1, scale: 1 },
+  exit: (dir: number) => ({ x: dir > 0 ? -60 : 60, opacity: 0, scale: 0.98 }),
+};
+
+const staggerContainer = {
+  center: {
+    transition: { staggerChildren: 0.06, delayChildren: 0.15 },
+  },
+};
+
+const optionVariant = {
+  enter: { opacity: 0, y: 16, scale: 0.95 },
+  center: { opacity: 1, y: 0, scale: 1 },
+};
+
+const optionTransition = {
+  type: 'spring' as const,
+  stiffness: 400,
+  damping: 28,
 };
 
 interface Props {
@@ -56,63 +73,131 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
     <motion.div
       className="step"
       custom={direction}
-      variants={variants}
+      variants={{ ...pageVariants, ...staggerContainer }}
       initial="enter"
       animate="center"
       exit="exit"
       transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h1 className="question-title">{question.title}</h1>
-      {question.subtitle && <p className="question-subtitle">{question.subtitle}</p>}
+      <motion.h1
+        className="question-title"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05, duration: 0.3 }}
+      >
+        {question.title}
+      </motion.h1>
+
+      {question.subtitle && (
+        <motion.p
+          className="question-subtitle"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+        >
+          {question.subtitle}
+        </motion.p>
+      )}
 
       {question.type === 'intro' && (
-        <button className="cta-btn" onClick={onNext}>
-          {question.buttonText || 'Continuer →'}
-        </button>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
+        >
+          <motion.button
+            className="cta-btn"
+            onClick={onNext}
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            {question.buttonText || 'Continuer →'}
+          </motion.button>
+        </motion.div>
       )}
 
       {question.type === 'single-choice' && (
-        <div className="options">
+        <motion.div
+          className="options"
+          variants={staggerContainer}
+          initial="enter"
+          animate="center"
+        >
           {question.options.map((opt: any) => (
-            <button
+            <motion.button
               key={opt.value}
               className={`option-btn ${answer === opt.value ? 'selected' : ''}`}
               onClick={() => handleSingleChoice(opt.value)}
+              variants={optionVariant}
+              transition={optionTransition}
+              whileHover={{ scale: 1.015, y: -2 }}
+              whileTap={{ scale: 0.97 }}
             >
               {opt.label}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {question.type === 'multi-choice' && (
         <>
-          <div className="options">
+          <motion.div
+            className="options"
+            variants={staggerContainer}
+            initial="enter"
+            animate="center"
+          >
             {question.options.map((opt: any) => (
-              <button
+              <motion.button
                 key={opt.value}
                 className={`option-btn ${localMulti.includes(opt.value) ? 'selected' : ''}`}
                 onClick={() => handleMultiToggle(opt.value)}
+                variants={optionVariant}
+                transition={optionTransition}
+                whileHover={{ scale: 1.015, y: -2 }}
+                whileTap={{ scale: 0.97 }}
               >
                 {opt.label}
-                {localMulti.includes(opt.value) && <span className="check">✓</span>}
-              </button>
+                {localMulti.includes(opt.value) && (
+                  <motion.span
+                    className="check"
+                    initial={{ scale: 0, rotate: -90 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                  >
+                    ✓
+                  </motion.span>
+                )}
+              </motion.button>
             ))}
-          </div>
-          <button
-            className="cta-btn"
-            onClick={onNext}
-            disabled={localMulti.length === 0}
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
           >
-            Continuer →
-          </button>
+            <motion.button
+              className="cta-btn"
+              onClick={onNext}
+              disabled={localMulti.length === 0}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Continuer →
+            </motion.button>
+          </motion.div>
         </>
       )}
 
       {question.type === 'contact' && (
-        <div className="contact-form">
-          {(question.fields || ['name', 'email']).map((field: string) => (
-            <input
+        <motion.div
+          className="contact-form"
+          initial="enter"
+          animate="center"
+          variants={staggerContainer}
+        >
+          {(question.fields || ['name', 'email']).map((field: string, i: number) => (
+            <motion.input
               key={field}
               type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
               placeholder={
@@ -124,16 +209,27 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
               value={contactData[field] || ''}
               onChange={e => handleContactChange(field, e.target.value)}
               className="input-field"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.08, type: 'spring', stiffness: 400, damping: 28 }}
             />
           ))}
-          <button
-            className="cta-btn"
-            onClick={onNext}
-            disabled={!isContactValid()}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 25 }}
           >
-            Voir mon estimation →
-          </button>
-        </div>
+            <motion.button
+              className="cta-btn"
+              onClick={onNext}
+              disabled={!isContactValid()}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Voir mon estimation →
+            </motion.button>
+          </motion.div>
+        </motion.div>
       )}
     </motion.div>
   );
