@@ -47,12 +47,12 @@ function AnimatedPrice({ value, currency }: { value: number; currency: string })
 }
 
 const PARTICLE_COLORS = [
-  '#6c47d9',
-  '#9b6dff',
-  '#4a9eff',
-  '#2db87a',
-  '#ff6b6b',
-  '#ffb347',
+  '#4f46e5',
+  '#7c3aed',
+  '#06b6d4',
+  '#10b981',
+  '#f59e0b',
+  '#ef4444',
 ];
 
 function Particles() {

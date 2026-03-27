@@ -2,27 +2,36 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const pageVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 60 : -60, opacity: 0, scale: 0.98 }),
-  center: { x: 0, opacity: 1, scale: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? -60 : 60, opacity: 0, scale: 0.98 }),
+  enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir > 0 ? -40 : 40, opacity: 0 }),
 };
 
 const staggerContainer = {
   center: {
-    transition: { staggerChildren: 0.06, delayChildren: 0.15 },
+    transition: { staggerChildren: 0.05, delayChildren: 0.12 },
   },
 };
 
 const optionVariant = {
-  enter: { opacity: 0, y: 16, scale: 0.95 },
-  center: { opacity: 1, y: 0, scale: 1 },
+  enter: { opacity: 0, y: 12 },
+  center: { opacity: 1, y: 0 },
 };
 
 const optionTransition = {
   type: 'spring' as const,
   stiffness: 400,
-  damping: 28,
+  damping: 30,
 };
+
+// Split emoji prefix from label text
+function splitEmoji(label: string): { emoji: string; text: string } {
+  const match = label.match(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F?)\s*/u);
+  if (match) {
+    return { emoji: match[1], text: label.slice(match[0].length) };
+  }
+  return { emoji: '', text: label };
+}
 
 interface Props {
   question: any;
@@ -46,7 +55,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
 
   const handleSingleChoice = (value: string) => {
     onAnswer(question.id, value);
-    setTimeout(onNext, 300);
+    setTimeout(onNext, 250);
   };
 
   const handleMultiToggle = (value: string) => {
@@ -69,6 +78,26 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
     return fields.every((f: string) => contactData[f]?.trim());
   };
 
+  // Handle Enter key for single-choice
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (question.type === 'single-choice' && question.options) {
+        const idx = parseInt(e.key) - 1;
+        if (idx >= 0 && idx < question.options.length) {
+          handleSingleChoice(question.options[idx].value);
+        }
+      }
+      if (question.type === 'intro' && e.key === 'Enter') {
+        onNext();
+      }
+      if (question.type === 'multi-choice' && e.key === 'Enter' && localMulti.length > 0) {
+        onNext();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [question, localMulti]);
+
   return (
     <motion.div
       className="step"
@@ -77,11 +106,11 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
       initial="enter"
       animate="center"
       exit="exit"
-      transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
       <motion.h1
         className="question-title"
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.3 }}
       >
@@ -91,7 +120,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
       {question.subtitle && (
         <motion.p
           className="question-subtitle"
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.3 }}
         >
@@ -101,7 +130,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
 
       {question.type === 'intro' && (
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
         >
@@ -111,8 +140,13 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.97 }}
           >
-            {question.buttonText || 'Continuer →'}
+            {question.buttonText || 'Commencer →'}
           </motion.button>
+          <div className="keyboard-hint">
+            <span>Appuyez sur</span>
+            <kbd>Entrée</kbd>
+            <span>↵</span>
+          </div>
         </motion.div>
       )}
 
@@ -123,19 +157,31 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
           initial="enter"
           animate="center"
         >
-          {question.options.map((opt: any) => (
-            <motion.button
-              key={opt.value}
-              className={`option-btn ${answer === opt.value ? 'selected' : ''}`}
-              onClick={() => handleSingleChoice(opt.value)}
-              variants={optionVariant}
-              transition={optionTransition}
-              whileHover={{ scale: 1.015, y: -2 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              {opt.label}
-            </motion.button>
-          ))}
+          {question.options.map((opt: any, i: number) => {
+            const { emoji, text } = splitEmoji(opt.label);
+            return (
+              <motion.button
+                key={opt.value}
+                className={`option-btn ${answer === opt.value ? 'selected' : ''}`}
+                onClick={() => handleSingleChoice(opt.value)}
+                variants={optionVariant}
+                transition={optionTransition}
+                whileHover={{ scale: 1.015, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {emoji && <span className="option-emoji">{emoji}</span>}
+                <span className="option-label">{text}</span>
+                <kbd style={{
+                  minWidth: 20, height: 20, padding: '0 6px',
+                  background: 'var(--surface)', border: '1px solid var(--border)',
+                  borderRadius: 4, fontSize: 11, fontWeight: 600,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--text-tertiary)', boxShadow: '0 1px 0 var(--border)',
+                  fontFamily: 'inherit', flexShrink: 0
+                }}>{i + 1}</kbd>
+              </motion.button>
+            );
+          })}
         </motion.div>
       )}
 
@@ -147,32 +193,36 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
             initial="enter"
             animate="center"
           >
-            {question.options.map((opt: any) => (
-              <motion.button
-                key={opt.value}
-                className={`option-btn ${localMulti.includes(opt.value) ? 'selected' : ''}`}
-                onClick={() => handleMultiToggle(opt.value)}
-                variants={optionVariant}
-                transition={optionTransition}
-                whileHover={{ scale: 1.015, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                {opt.label}
-                {localMulti.includes(opt.value) && (
-                  <motion.span
-                    className="check"
-                    initial={{ scale: 0, rotate: -90 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 20 }}
-                  >
-                    ✓
-                  </motion.span>
-                )}
-              </motion.button>
-            ))}
+            {question.options.map((opt: any) => {
+              const { emoji, text } = splitEmoji(opt.label);
+              return (
+                <motion.button
+                  key={opt.value}
+                  className={`option-btn ${localMulti.includes(opt.value) ? 'selected' : ''}`}
+                  onClick={() => handleMultiToggle(opt.value)}
+                  variants={optionVariant}
+                  transition={optionTransition}
+                  whileHover={{ scale: 1.015, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  {emoji && <span className="option-emoji">{emoji}</span>}
+                  <span className="option-label">{text}</span>
+                  {localMulti.includes(opt.value) && (
+                    <motion.span
+                      className="check"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+                    >
+                      ✓
+                    </motion.span>
+                  )}
+                </motion.button>
+              );
+            })}
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
           >
@@ -203,21 +253,21 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
               placeholder={
                 field === 'name' ? 'Votre nom'
                 : field === 'email' ? 'votre@email.com'
-                : field === 'phone' ? '+41 79 000 00 00'
+                : field === 'phone' ? '+41 79 000 00 00 (optionnel)'
                 : field
               }
               value={contactData[field] || ''}
               onChange={e => handleContactChange(field, e.target.value)}
               className="input-field"
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + i * 0.08, type: 'spring', stiffness: 400, damping: 28 }}
+              transition={{ delay: 0.1 + i * 0.07, type: 'spring', stiffness: 400, damping: 28 }}
             />
           ))}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 25 }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
           >
             <motion.button
               className="cta-btn"

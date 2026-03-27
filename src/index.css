@@ -7,68 +7,69 @@
   box-sizing: border-box;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
-  /* --- Color System (hex — compatible everywhere) --- */
-
-  /* Backgrounds */
-  --bg: #f8f7ff;
+  /* --- Palette --- */
+  --bg: #fafafa;
   --bg-elevated: #ffffff;
-  --surface: #f1eeff;
-  --surface-hover: #e8e3ff;
+  --surface: #f4f4f5;
+  --surface-hover: #e4e4e7;
 
-  /* Borders */
-  --border: #ddd8f0;
-  --border-hover: #c0b6e0;
+  --border: #e4e4e7;
+  --border-hover: #a1a1aa;
 
-  /* Text */
-  --text-primary: #1a1530;
-  --text-secondary: #5c5470;
-  --text-tertiary: #8a8298;
+  --text-primary: #09090b;
+  --text-secondary: #52525b;
+  --text-tertiary: #a1a1aa;
 
-  /* Accent (Indigo) */
-  --accent: #6c47d9;
-  --accent-hover: #5a35c8;
-  --accent-soft: #ece4ff;
+  /* Accent — electric indigo */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: rgba(79, 70, 229, 0.08);
   --accent-text: #ffffff;
+  --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
 
-  /* Accent gradient */
-  --accent-gradient: linear-gradient(135deg, #6c47d9, #9b6dff);
-
-  /* Success */
-  --success: #2db87a;
-  --success-soft: #e0f5ec;
+  --success: #10b981;
+  --success-soft: rgba(16, 185, 129, 0.1);
+  --error: #ef4444;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(26, 21, 48, 0.06);
-  --shadow-md: 0 4px 12px rgba(26, 21, 48, 0.08);
-  --shadow-lg: 0 8px 32px rgba(26, 21, 48, 0.12);
-  --shadow-accent: 0 4px 16px rgba(108, 71, 217, 0.25);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+  --shadow-accent: 0 4px 14px -2px rgba(79, 70, 229, 0.35);
+  --shadow-accent-lg: 0 8px 24px -4px rgba(79, 70, 229, 0.4);
 
-  /* --- Typography --- */
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
-
-  /* --- Spacing (8pt grid) --- */
+  /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 40px;
-  --space-8: 48px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
 
-  /* --- Radius --- */
+  /* Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
-  /* --- Transitions --- */
-  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Transitions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-quick: 150ms;
-  --duration-normal: 250ms;
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+
+  /* Font */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   font-family: var(--font);
   font-size: 16px;
@@ -83,35 +84,37 @@
 
 /* --- Dark Mode --- */
 [data-theme="dark"] {
-  --bg: #161225;
-  --bg-elevated: #1f1a32;
-  --surface: #241e38;
-  --surface-hover: #302845;
-  --border: #38304d;
-  --border-hover: #504668;
+  --bg: #0a0a0b;
+  --bg-elevated: #141416;
+  --surface: #1c1c1f;
+  --surface-hover: #27272a;
 
-  --text-primary: #ece9f3;
-  --text-secondary: #a9a2b8;
-  --text-tertiary: #7d7590;
+  --border: #27272a;
+  --border-hover: #3f3f46;
 
-  --accent: #9b7df0;
-  --accent-hover: #ad8ff8;
-  --accent-soft: #2a2045;
-  --accent-text: #161225;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #52525b;
 
-  --accent-gradient: linear-gradient(135deg, #9b7df0, #c4a8ff);
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-soft: rgba(129, 140, 248, 0.1);
+  --accent-text: #0a0a0b;
+  --accent-gradient: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
 
-  --success: #3dcf8a;
-  --success-soft: #1a2f24;
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.1);
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --shadow-accent: 0 4px 16px rgba(155, 125, 240, 0.2);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.4);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.5);
+  --shadow-accent: 0 4px 14px -2px rgba(129, 140, 248, 0.25);
+  --shadow-accent-lg: 0 8px 24px -4px rgba(129, 140, 248, 0.3);
 }
 
-html,
-body {
+html, body {
   height: 100%;
   overflow-x: hidden;
 }
@@ -129,14 +132,12 @@ button {
   background: none;
 }
 
-input,
-textarea,
-select {
+input, textarea, select {
   font-family: inherit;
   font-size: inherit;
 }
 
 ::selection {
   background: var(--accent-soft);
-  color: var(--text-primary);
+  color: var(--accent);
 }
