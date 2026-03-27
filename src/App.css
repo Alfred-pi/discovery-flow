@@ -6,9 +6,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-6);
+  padding: var(--space-4);
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .app {
+    padding: var(--space-6);
+  }
 }
 
 /* Ambient glow */
@@ -40,8 +46,8 @@
 /* ===== THEME TOGGLE ===== */
 .theme-toggle {
   position: fixed;
-  top: var(--space-6);
-  right: var(--space-6);
+  top: var(--space-4);
+  right: var(--space-4);
   z-index: 100;
   width: 40px;
   height: 40px;
@@ -54,6 +60,13 @@
   font-size: 16px;
   box-shadow: var(--shadow-sm);
   transition: all var(--duration-normal) var(--ease-out);
+}
+
+@media (min-width: 640px) {
+  .theme-toggle {
+    top: var(--space-6);
+    right: var(--space-6);
+  }
 }
 
 .theme-toggle:hover {
@@ -108,7 +121,7 @@
 
 /* ===== TYPOGRAPHY ===== */
 .question-title {
-  font-size: clamp(26px, 5vw, 36px);
+  font-size: clamp(22px, 5vw, 36px);
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: -0.03em;
@@ -117,10 +130,17 @@
 }
 
 .question-subtitle {
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
   color: var(--text-secondary);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .question-subtitle {
+    font-size: 16px;
+    margin-bottom: var(--space-8);
+  }
 }
 
 /* ===== OPTIONS GRID ===== */
@@ -136,14 +156,14 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   width: 100%;
-  min-height: 60px;
-  padding: var(--space-4) var(--space-5);
+  min-height: 56px;
+  padding: var(--space-3) var(--space-4);
   background: var(--bg-elevated);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-lg);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-primary);
   text-align: left;
@@ -155,13 +175,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--text-secondary);
   flex-shrink: 0;
   transition: all var(--duration-normal) var(--ease-out);
+}
+
+@media (min-width: 640px) {
+  .option-btn {
+    gap: var(--space-4);
+    min-height: 60px;
+    padding: var(--space-4) var(--space-5);
+    font-size: 15px;
+  }
+  
+  .option-btn .option-icon {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .option-btn.selected .option-icon {
@@ -219,17 +253,25 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  height: 52px;
-  padding: 0 var(--space-7);
+  height: 48px;
+  padding: 0 var(--space-6);
   background: var(--accent-gradient);
   color: var(--accent-text);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-accent);
   transition: all var(--duration-normal) var(--ease-out);
   align-self: flex-start;
+}
+
+@media (min-width: 640px) {
+  .cta-btn {
+    height: 52px;
+    padding: 0 var(--space-7);
+    font-size: 15px;
+  }
 }
 
 .cta-btn:hover:not(:disabled) {
@@ -256,16 +298,24 @@
 
 .input-field {
   width: 100%;
-  height: 52px;
-  padding: 0 var(--space-5);
+  height: 48px;
+  padding: 0 var(--space-4);
   background: var(--bg-elevated);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-primary);
   box-shadow: var(--shadow-xs);
   transition: all var(--duration-normal) var(--ease-out);
   outline: none;
+}
+
+@media (min-width: 640px) {
+  .input-field {
+    height: 52px;
+    padding: 0 var(--space-5);
+    font-size: 15px;
+  }
 }
 
 .input-field::placeholder {
@@ -311,10 +361,19 @@
 
 .details-textarea {
   height: auto;
-  min-height: 72px;
-  padding: var(--space-4) var(--space-5);
+  min-height: 64px;
+  padding: var(--space-3) var(--space-4);
   resize: vertical;
   line-height: 1.5;
+  font-size: 14px;
+}
+
+@media (min-width: 640px) {
+  .details-textarea {
+    min-height: 72px;
+    padding: var(--space-4) var(--space-5);
+    font-size: 15px;
+  }
 }
 
 /* ===== VOICE RECORDER ===== */
@@ -591,19 +650,8 @@
 /* ===== RESPONSIVE ===== */
 @media (max-width: 640px) {
   .app {
-    padding: var(--space-5);
     justify-content: flex-start;
     padding-top: 60px;
-  }
-
-  .theme-toggle {
-    top: var(--space-4);
-    right: var(--space-4);
-  }
-
-  .option-btn {
-    min-height: 56px;
-    padding: var(--space-3) var(--space-4);
   }
 
   .back-btn {
@@ -693,6 +741,13 @@
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
   z-index: 1000;
+}
+
+@media (min-width: 640px) {
+  .lang-toggle {
+    top: var(--space-6);
+    left: var(--space-6);
+  }
 }
 
 .lang-toggle:hover {
