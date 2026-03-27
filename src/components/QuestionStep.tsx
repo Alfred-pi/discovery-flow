@@ -1,7 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import type { AnswerEntry } from '../types';
-import VoiceRecorder from './VoiceRecorder';
 
 const pageVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? 60 : -60, opacity: 0, scale: 0.98 }),
@@ -27,29 +25,28 @@ const optionTransition = {
 };
 
 interface Props {
-  question: {
-    id: string;
-    type: string;
-    title: string;
-    subtitle?: string;
-    placeholder?: string;
-    detailsPrompt?: string;
-    options?: { label: string; value: string; priceWeight: number }[];
-  };
-  answer: AnswerEntry | undefined;
-  onAnswer: (id: string, entry: AnswerEntry) => void;
+  question: any;
+  answer: string | string[] | undefined;
+  onAnswer: (id: string, value: string | string[]) => void;
   onNext: () => void;
   direction: number;
 }
 
 export default function QuestionStep({ question, answer, onAnswer, onNext, direction }: Props) {
-  const [localMulti, setLocalMulti] = useState<string[]>(
-    Array.isArray(answer?.value) ? (answer.value as string[]) : []
+  const [localMulti, setLocalMulti] = useState<string[]>((answer as string[]) || []);
+  const [contactData, setContactData] = useState<Record<string, string>>(
+    typeof answer === 'string' ? {} : {}
   );
-  const [details, setDetails] = useState(answer?.details || '');
+
+  useEffect(() => {
+    if (question.type === 'multi-choice' && Array.isArray(answer)) {
+      setLocalMulti(answer as string[]);
+    }
+  }, [question.id, answer]);
 
   const handleSingleChoice = (value: string) => {
-    onAnswer(question.id, { value, details });
+    onAnswer(question.id, value);
+    setTimeout(onNext, 300);
   };
 
   const handleMultiToggle = (value: string) => {
@@ -57,36 +54,26 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
       ? localMulti.filter(v => v !== value)
       : [...localMulti, value];
     setLocalMulti(updated);
-    onAnswer(question.id, { value: updated, details });
+    onAnswer(question.id, updated);
   };
 
-  const handleDetailsChange = (text: string) => {
-    setDetails(text);
-    const currentValue = question.type === 'multi-choice'
-      ? localMulti
-      : answer?.value;
-    onAnswer(question.id, { value: currentValue, details: text });
+  const handleContactChange = (field: string, value: string) => {
+    const updated = { ...contactData, [field]: value };
+    setContactData(updated);
+    onAnswer(question.id, JSON.stringify(updated));
   };
 
-  const handleTranscription = (text: string) => {
-    const newDetails = details ? `${details} ${text}` : text;
-    handleDetailsChange(newDetails);
+  const isContactValid = () => {
+    if (question.type !== 'contact') return true;
+    const fields = question.fields || ['name', 'email'];
+    return fields.every((f: string) => contactData[f]?.trim());
   };
-
-  const canContinue = () => {
-    if (question.type === 'open') return !!details.trim();
-    if (question.type === 'multi-choice') return localMulti.length > 0;
-    return !!answer?.value;
-  };
-
-  const isOpen = question.type === 'open';
-  const hasOptions = question.type === 'single-choice' || question.type === 'multi-choice';
 
   return (
     <motion.div
       className="step"
       custom={direction}
-      variants={{ ...pageVariants, ...staggerContainer }}
+      variants={pageVariants}
       initial="enter"
       animate="center"
       exit="exit"
@@ -112,34 +99,66 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
         </motion.p>
       )}
 
-      {hasOptions && (
+      {question.type === 'intro' && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
+        >
+          <motion.button
+            className="cta-btn"
+            onClick={onNext}
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            {question.buttonText || 'Continuer →'}
+          </motion.button>
+        </motion.div>
+      )}
+
+      {question.type === 'single-choice' && (
         <motion.div
           className="options"
           variants={staggerContainer}
           initial="enter"
           animate="center"
         >
-          {question.options!.map((opt) => {
-            const isSelected = question.type === 'multi-choice'
-              ? localMulti.includes(opt.value)
-              : answer?.value === opt.value;
+          {question.options.map((opt: any) => (
+            <motion.button
+              key={opt.value}
+              className={`option-btn ${answer === opt.value ? 'selected' : ''}`}
+              onClick={() => handleSingleChoice(opt.value)}
+              variants={optionVariant}
+              transition={optionTransition}
+              whileHover={{ scale: 1.015, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              {opt.label}
+            </motion.button>
+          ))}
+        </motion.div>
+      )}
 
-            return (
+      {question.type === 'multi-choice' && (
+        <>
+          <motion.div
+            className="options"
+            variants={staggerContainer}
+            initial="enter"
+            animate="center"
+          >
+            {question.options.map((opt: any) => (
               <motion.button
                 key={opt.value}
-                className={`option-btn ${isSelected ? 'selected' : ''}`}
-                onClick={() =>
-                  question.type === 'single-choice'
-                    ? handleSingleChoice(opt.value)
-                    : handleMultiToggle(opt.value)
-                }
+                className={`option-btn ${localMulti.includes(opt.value) ? 'selected' : ''}`}
+                onClick={() => handleMultiToggle(opt.value)}
                 variants={optionVariant}
                 transition={optionTransition}
                 whileHover={{ scale: 1.015, y: -2 }}
                 whileTap={{ scale: 0.97 }}
               >
                 {opt.label}
-                {isSelected && question.type === 'multi-choice' && (
+                {localMulti.includes(opt.value) && (
                   <motion.span
                     className="check"
                     initial={{ scale: 0, rotate: -90 }}
@@ -150,46 +169,68 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
                   </motion.span>
                 )}
               </motion.button>
-            );
-          })}
-        </motion.div>
+            ))}
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
+          >
+            <motion.button
+              className="cta-btn"
+              onClick={onNext}
+              disabled={localMulti.length === 0}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Continuer →
+            </motion.button>
+          </motion.div>
+        </>
       )}
 
-      <motion.div
-        className="details-area"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: hasOptions ? 0.3 : 0.15, duration: 0.3 }}
-      >
-        <textarea
-          className="details-textarea"
-          placeholder={
-            isOpen
-              ? (question.placeholder || 'Parlez librement...')
-              : (question.detailsPrompt || 'Ajoutez des détails...')
-          }
-          value={details}
-          onChange={(e) => handleDetailsChange(e.target.value)}
-          rows={isOpen ? 4 : 2}
-        />
-        <VoiceRecorder onTranscription={handleTranscription} />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
-      >
-        <motion.button
-          className="cta-btn"
-          onClick={onNext}
-          disabled={!canContinue()}
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.97 }}
+      {question.type === 'contact' && (
+        <motion.div
+          className="contact-form"
+          initial="enter"
+          animate="center"
+          variants={staggerContainer}
         >
-          Continuer →
-        </motion.button>
-      </motion.div>
+          {(question.fields || ['name', 'email']).map((field: string, i: number) => (
+            <motion.input
+              key={field}
+              type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
+              placeholder={
+                field === 'name' ? 'Votre nom'
+                : field === 'email' ? 'votre@email.com'
+                : field === 'phone' ? '+41 79 000 00 00'
+                : field
+              }
+              value={contactData[field] || ''}
+              onChange={e => handleContactChange(field, e.target.value)}
+              className="input-field"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.08, type: 'spring', stiffness: 400, damping: 28 }}
+            />
+          ))}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 25 }}
+          >
+            <motion.button
+              className="cta-btn"
+              onClick={onNext}
+              disabled={!isContactValid()}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Voir mon estimation →
+            </motion.button>
+          </motion.div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

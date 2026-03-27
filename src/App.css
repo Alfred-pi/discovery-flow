@@ -18,16 +18,16 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -20%, var(--accent-soft), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 100%, oklch(0.92 0.04 300 / 0.3), transparent);
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(108, 71, 217, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(155, 109, 255, 0.08), transparent);
   pointer-events: none;
   z-index: 0;
 }
 
 [data-theme="dark"] .app::before {
   background:
-    radial-gradient(ellipse 80% 60% at 50% -20%, oklch(0.2 0.06 var(--hue) / 0.5), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 100%, oklch(0.18 0.04 300 / 0.3), transparent);
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(108, 71, 217, 0.2), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(155, 109, 255, 0.1), transparent);
 }
 
 /* ===== CONTAINER ===== */
@@ -195,21 +195,19 @@
   gap: var(--space-2);
   min-height: 52px;
   padding: var(--space-4) var(--space-6);
-  background: var(--accent);
+  background: var(--accent-gradient);
   color: var(--accent-text);
   font-size: 16px;
   font-weight: 600;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-accent);
   transition:
-    background var(--duration-quick) var(--ease-out),
     box-shadow var(--duration-quick) var(--ease-out),
     transform var(--duration-quick) var(--ease-spring);
   align-self: flex-start;
 }
 
 .cta-btn:hover:not(:disabled) {
-  background: var(--accent-hover);
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
@@ -256,6 +254,23 @@
   box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-sm);
 }
 
+.input-field.input-error {
+  border-color: #e74c3c;
+}
+
+.field-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field-error {
+  font-size: 13px;
+  color: #e74c3c;
+  font-weight: 500;
+  padding-left: var(--space-1);
+}
+
 .contact-form .cta-btn {
   margin-top: var(--space-4);
   align-self: stretch;
@@ -284,7 +299,7 @@
 
 .progress-fill {
   height: 100%;
-  background: var(--accent);
+  background: var(--accent-gradient);
   border-radius: var(--radius-full);
   position: relative;
 }
@@ -362,7 +377,7 @@
   font-size: clamp(40px, 8vw, 56px);
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--accent), oklch(0.6 0.2 300));
+  background: var(--accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -423,177 +438,6 @@
   height: 8px;
   border-radius: var(--radius-full);
   opacity: 0;
-}
-
-/* ===== DETAILS AREA (textarea + voice) ===== */
-.details-area {
-  display: flex;
-  gap: var(--space-3);
-  align-items: flex-start;
-  margin-bottom: var(--space-5);
-}
-
-.details-textarea {
-  flex: 1;
-  min-height: 52px;
-  padding: var(--space-3) var(--space-4);
-  background: var(--bg-elevated);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
-  font-size: 15px;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-sm);
-  resize: vertical;
-  outline: none;
-  transition:
-    border-color var(--duration-normal) var(--ease-out),
-    box-shadow var(--duration-normal) var(--ease-out);
-  font-family: var(--font);
-  line-height: 1.5;
-}
-
-.details-textarea::placeholder {
-  color: var(--text-tertiary);
-}
-
-.details-textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-sm);
-}
-
-/* ===== VOICE RECORDER ===== */
-.voice-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-width: 44px;
-  min-height: 44px;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-full);
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  font-size: 18px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition:
-    background var(--duration-quick) var(--ease-out),
-    border-color var(--duration-quick) var(--ease-out);
-}
-
-.voice-btn:hover {
-  background: var(--surface-hover);
-  border-color: var(--border-hover);
-}
-
-.voice-btn.recording {
-  background: oklch(0.55 0.2 25);
-  border-color: oklch(0.55 0.2 25);
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  padding: var(--space-2) var(--space-4);
-  animation: pulse-recording 1.5s ease-in-out infinite;
-}
-
-[data-theme="dark"] .voice-btn.recording {
-  background: oklch(0.6 0.22 25);
-  border-color: oklch(0.6 0.22 25);
-}
-
-@keyframes pulse-recording {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.55 0.2 25 / 0.4); }
-  50% { box-shadow: 0 0 0 8px oklch(0.55 0.2 25 / 0); }
-}
-
-.voice-timer {
-  font-variant-numeric: tabular-nums;
-  font-size: 13px;
-}
-
-.voice-btn.transcribing {
-  background: var(--surface);
-  border-color: var(--accent);
-  min-width: 44px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.voice-spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: var(--radius-full);
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ===== SUMMARY CARDS ===== */
-.summary-cards {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-}
-
-.summary-card {
-  padding: var(--space-4) var(--space-5);
-  background: var(--bg-elevated);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-}
-
-.summary-card-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: var(--space-1);
-}
-
-.summary-card-value {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text-primary);
-  line-height: 1.4;
-}
-
-.summary-card-details {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-top: var(--space-1);
-  line-height: 1.5;
-  font-style: italic;
-}
-
-/* ===== FIELD WRAPPER ===== */
-.field-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.field-error {
-  font-size: 13px;
-  color: oklch(0.6 0.2 25);
-  padding-left: var(--space-2);
-}
-
-.input-field.input-error {
-  border-color: oklch(0.6 0.2 25);
-}
-
-.input-field.input-error:focus {
-  box-shadow: 0 0 0 3px oklch(0.6 0.2 25 / 0.15), var(--shadow-sm);
 }
 
 /* ===== RESPONSIVE ===== */
