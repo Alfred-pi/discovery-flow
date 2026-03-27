@@ -6,6 +6,9 @@ import {
   Calendar, Globe, Image, MessageCircle, ClipboardList, Star, MapPin,
   Minus, Zap, Leaf, Flame, Palette,
   CalendarDays, Clock, Eye,
+  Monitor, ShoppingCart, RefreshCw, Users, Award, TrendingUp,
+  Layers, Share2, Lock, CreditCard, Link, Settings, BarChart,
+  Cpu, Compass, Circle, CircleDot, Disc, Gem,
   type LucideProps
 } from 'lucide-react';
 
@@ -44,6 +47,25 @@ const iconMap: Record<string, React.FC<LucideProps>> = {
   'calendar-days': CalendarDays,
   'clock': Clock,
   'eye': Eye,
+  'monitor': Monitor,
+  'shopping-cart': ShoppingCart,
+  'refresh-cw': RefreshCw,
+  'users': Users,
+  'award': Award,
+  'trending-up': TrendingUp,
+  'layers': Layers,
+  'share-2': Share2,
+  'lock': Lock,
+  'credit-card': CreditCard,
+  'link': Link,
+  'settings': Settings,
+  'bar-chart': BarChart,
+  'cpu': Cpu,
+  'compass': Compass,
+  'circle': Circle,
+  'circle-dot': CircleDot,
+  'disc': Disc,
+  'gem': Gem,
 };
 
 interface Props {
