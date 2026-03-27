@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Icon from './Icon';
 
 const pageVariants = {
@@ -10,7 +10,7 @@ const pageVariants = {
 
 const staggerContainer = {
   center: {
-    transition: { staggerChildren: 0.05, delayChildren: 0.12 },
+    transition: { staggerChildren: 0.04, delayChildren: 0.1 },
   },
 };
 
@@ -27,35 +27,39 @@ const optionTransition = {
 
 interface Props {
   question: any;
-  answer: string | string[] | undefined;
-  onAnswer: (id: string, value: string | string[]) => void;
+  answer: any;
+  onAnswer: (id: string, value: any) => void;
   onNext: () => void;
   direction: number;
 }
 
 export default function QuestionStep({ question, answer, onAnswer, onNext, direction }: Props) {
-  const [localMulti, setLocalMulti] = useState<string[]>((answer as string[]) || []);
-  const [contactData, setContactData] = useState<Record<string, string>>(
-    typeof answer === 'string' ? {} : {}
+  const currentValue: string[] = answer?.value || answer || [];
+  const currentDetails: string = answer?.details || '';
+  const [localMulti, setLocalMulti] = useState<string[]>(
+    Array.isArray(currentValue) ? currentValue : []
   );
+  const [details, setDetails] = useState(currentDetails);
+  const [contactData, setContactData] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (question.type === 'multi-choice' && Array.isArray(answer)) {
-      setLocalMulti(answer as string[]);
+    if (Array.isArray(currentValue)) {
+      setLocalMulti(currentValue);
     }
-  }, [question.id, answer]);
+    setDetails(currentDetails);
+  }, [question.id]);
 
-  const handleSingleChoice = (value: string) => {
-    onAnswer(question.id, value);
-    setTimeout(onNext, 250);
-  };
-
-  const handleMultiToggle = (value: string) => {
+  const handleToggle = (value: string) => {
     const updated = localMulti.includes(value)
       ? localMulti.filter(v => v !== value)
       : [...localMulti, value];
     setLocalMulti(updated);
-    onAnswer(question.id, updated);
+    onAnswer(question.id, { value: updated, details });
+  };
+
+  const handleDetailsChange = (text: string) => {
+    setDetails(text);
+    onAnswer(question.id, { value: localMulti, details: text });
   };
 
   const handleContactChange = (field: string, value: string) => {
@@ -70,25 +74,24 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
     return fields.every((f: string) => contactData[f]?.trim());
   };
 
-  // Handle Enter key for single-choice
+  const canContinue = localMulti.length > 0 || details.trim().length > 0;
+
+  // Keyboard: Enter to continue
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (question.type === 'single-choice' && question.options) {
-        const idx = parseInt(e.key) - 1;
-        if (idx >= 0 && idx < question.options.length) {
-          handleSingleChoice(question.options[idx].value);
+      if (e.key === 'Enter' && !e.shiftKey) {
+        if (question.type === 'intro') {
+          onNext();
+        } else if (question.type === 'multi-choice' && canContinue) {
+          // Don't trigger if typing in textarea
+          if ((e.target as HTMLElement)?.tagName === 'TEXTAREA') return;
+          onNext();
         }
-      }
-      if (question.type === 'intro' && e.key === 'Enter') {
-        onNext();
-      }
-      if (question.type === 'multi-choice' && e.key === 'Enter' && localMulti.length > 0) {
-        onNext();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [question, localMulti]);
+  }, [question, canContinue]);
 
   return (
     <motion.div
@@ -142,38 +145,6 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
         </motion.div>
       )}
 
-      {question.type === 'single-choice' && (
-        <motion.div
-          className="options"
-          variants={staggerContainer}
-          initial="enter"
-          animate="center"
-        >
-          {question.options.map((opt: any, i: number) => (
-              <motion.button
-                key={opt.value}
-                className={`option-btn ${answer === opt.value ? 'selected' : ''}`}
-                onClick={() => handleSingleChoice(opt.value)}
-                variants={optionVariant}
-                transition={optionTransition}
-                whileHover={{ scale: 1.015, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                {opt.icon && <span className="option-icon"><Icon name={opt.icon} size={20} /></span>}
-                <span className="option-label">{opt.label}</span>
-                <kbd style={{
-                  minWidth: 20, height: 20, padding: '0 6px',
-                  background: 'var(--surface)', border: '1px solid var(--border)',
-                  borderRadius: 4, fontSize: 11, fontWeight: 600,
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'var(--text-tertiary)', boxShadow: '0 1px 0 var(--border)',
-                  fontFamily: 'inherit', flexShrink: 0
-                }}>{i + 1}</kbd>
-              </motion.button>
-          ))}
-        </motion.div>
-      )}
-
       {question.type === 'multi-choice' && (
         <>
           <motion.div
@@ -183,31 +154,52 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
             animate="center"
           >
             {question.options.map((opt: any) => (
-                <motion.button
-                  key={opt.value}
-                  className={`option-btn ${localMulti.includes(opt.value) ? 'selected' : ''}`}
-                  onClick={() => handleMultiToggle(opt.value)}
-                  variants={optionVariant}
-                  transition={optionTransition}
-                  whileHover={{ scale: 1.015, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  {opt.icon && <span className="option-icon"><Icon name={opt.icon} size={20} /></span>}
-                  <span className="option-label">{opt.label}</span>
+              <motion.button
+                key={opt.value}
+                className={`option-btn ${localMulti.includes(opt.value) ? 'selected' : ''}`}
+                onClick={() => handleToggle(opt.value)}
+                variants={optionVariant}
+                transition={optionTransition}
+                whileHover={{ scale: 1.015, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {opt.icon && <span className="option-icon"><Icon name={opt.icon} size={20} /></span>}
+                <span className="option-label">{opt.label}</span>
+                <AnimatePresence>
                   {localMulti.includes(opt.value) && (
                     <motion.span
                       className="check"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
                       transition={{ type: 'spring', stiffness: 500, damping: 20 }}
                     >
                       ✓
                     </motion.span>
                   )}
-                </motion.button>
+                </AnimatePresence>
+              </motion.button>
             ))}
           </motion.div>
+
+          {/* Details textarea */}
           <motion.div
+            className="details-field"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, duration: 0.3 }}
+          >
+            <textarea
+              className="input-field details-textarea"
+              placeholder={question.detailsPlaceholder || 'Précisez si besoin...'}
+              value={details}
+              onChange={e => handleDetailsChange(e.target.value)}
+              rows={2}
+            />
+          </motion.div>
+
+          <motion.div
+            className="step-actions"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
@@ -215,12 +207,17 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
             <motion.button
               className="cta-btn"
               onClick={onNext}
-              disabled={localMulti.length === 0}
+              disabled={!canContinue}
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.97 }}
             >
               Continuer →
             </motion.button>
+            <div className="keyboard-hint">
+              <span>Appuyez sur</span>
+              <kbd>Entrée</kbd>
+              <span>↵</span>
+            </div>
           </motion.div>
         </>
       )}

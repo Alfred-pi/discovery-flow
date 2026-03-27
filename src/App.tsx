@@ -7,7 +7,8 @@ import ProgressBar from './components/ProgressBar';
 import ThemeToggle from './components/ThemeToggle';
 import './App.css';
 
-export type Answers = Record<string, string | string[]>;
+export type AnswerEntry = { value: string[]; details: string } | string;
+export type Answers = Record<string, AnswerEntry>;
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -19,7 +20,7 @@ function App() {
   const totalSteps = questions.length;
   const isResult = currentStep >= totalSteps;
 
-  const handleAnswer = useCallback((questionId: string, value: string | string[]) => {
+  const handleAnswer = useCallback((questionId: string, value: any) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   }, []);
 
@@ -42,13 +43,14 @@ function App() {
       const answer = answers[q.id];
       if (!answer) continue;
       const opts = (q as any).options || [];
-      if (Array.isArray(answer)) {
-        for (const a of answer) {
-          const opt = opts.find((o: any) => o.value === a);
-          if (opt) total += opt.priceWeight || 0;
-        }
-      } else {
-        const opt = opts.find((o: any) => o.value === answer);
+
+      // New format: { value: string[], details: string }
+      const values: string[] = typeof answer === 'object' && 'value' in answer
+        ? (answer as any).value
+        : Array.isArray(answer) ? answer : [];
+
+      for (const a of values) {
+        const opt = opts.find((o: any) => o.value === a);
         if (opt) total += opt.priceWeight || 0;
       }
     }

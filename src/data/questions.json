@@ -17,8 +17,9 @@
     },
     {
       "id": "activity",
-      "type": "single-choice",
+      "type": "multi-choice",
       "title": "Quelle est votre activité ?",
+      "subtitle": "Sélectionnez une ou plusieurs réponses",
       "options": [
         { "label": "Location saisonnière", "value": "rental", "priceWeight": 0, "icon": "home" },
         { "label": "Conciergerie / Gestion", "value": "concierge", "priceWeight": 200, "icon": "building" },
@@ -26,41 +27,48 @@
         { "label": "Commerce / E-shop", "value": "ecommerce", "priceWeight": 400, "icon": "shopping-bag" },
         { "label": "Services / Freelance", "value": "services", "priceWeight": 0, "icon": "briefcase" },
         { "label": "Autre", "value": "other", "priceWeight": 0, "icon": "box" }
-      ]
+      ],
+      "detailsPlaceholder": "Décrivez votre activité en quelques mots..."
     },
     {
       "id": "goal",
-      "type": "single-choice",
-      "title": "Quel est votre objectif principal ?",
+      "type": "multi-choice",
+      "title": "Quels sont vos objectifs ?",
+      "subtitle": "Sélectionnez tout ce qui s'applique",
       "options": [
         { "label": "Avoir plus de clients / réservations", "value": "clients", "priceWeight": 0, "icon": "target" },
         { "label": "Créer une image de marque premium", "value": "branding", "priceWeight": 200, "icon": "sparkles" },
         { "label": "Être visible sur Google", "value": "seo", "priceWeight": 300, "icon": "search" },
         { "label": "Ne plus dépendre d'Airbnb / plateformes", "value": "independence", "priceWeight": 100, "icon": "unlink" },
         { "label": "Tout ça en même temps", "value": "all", "priceWeight": 400, "icon": "rocket" }
-      ]
+      ],
+      "detailsPlaceholder": "Des objectifs spécifiques à préciser ?"
     },
     {
       "id": "existing_site",
-      "type": "single-choice",
+      "type": "multi-choice",
       "title": "Avez-vous déjà un site web ?",
+      "subtitle": "Sélectionnez ce qui correspond",
       "options": [
         { "label": "Non, je pars de zéro", "value": "none", "priceWeight": 0, "icon": "plus-circle" },
         { "label": "Oui, mais il est vieux / moche", "value": "old", "priceWeight": -200, "icon": "alert-triangle" },
         { "label": "Oui, mais je veux mieux", "value": "upgrade", "priceWeight": -100, "icon": "arrow-up-circle" },
         { "label": "J'ai juste une page Facebook/Instagram", "value": "social_only", "priceWeight": 0, "icon": "smartphone" }
-      ]
+      ],
+      "detailsPlaceholder": "Lien vers votre site actuel ou précisions..."
     },
     {
       "id": "pages",
-      "type": "single-choice",
+      "type": "multi-choice",
       "title": "Combien de pages pour votre site ?",
+      "subtitle": "Sélectionnez ce qui vous convient",
       "options": [
         { "label": "Une seule page (Landing Page)", "value": "1", "priceWeight": 0, "icon": "file" },
         { "label": "3-5 pages (Site vitrine classique)", "value": "3-5", "priceWeight": 400, "icon": "files" },
         { "label": "6-10 pages (Site complet)", "value": "6-10", "priceWeight": 900, "icon": "layout-grid" },
         { "label": "Je ne sais pas encore", "value": "unknown", "priceWeight": 400, "icon": "help-circle" }
-      ]
+      ],
+      "detailsPlaceholder": "Des pages spécifiques en tête ? (blog, portfolio...)"
     },
     {
       "id": "features",
@@ -76,30 +84,35 @@
         { "label": "Avis clients / témoignages", "value": "reviews", "priceWeight": 150, "icon": "star" },
         { "label": "Carte / localisation", "value": "map", "priceWeight": 100, "icon": "map-pin" },
         { "label": "Application mobile", "value": "mobile_app", "priceWeight": 1500, "icon": "smartphone" }
-      ]
+      ],
+      "detailsPlaceholder": "D'autres fonctionnalités en tête ?"
     },
     {
       "id": "style",
-      "type": "single-choice",
+      "type": "multi-choice",
       "title": "Quel style vous correspond ?",
+      "subtitle": "Vous pouvez en choisir plusieurs",
       "options": [
         { "label": "Élégant & Minimaliste", "value": "minimal", "priceWeight": 0, "icon": "minus" },
         { "label": "Frais & Moderne", "value": "modern", "priceWeight": 0, "icon": "zap" },
         { "label": "Naturel & Chaleureux", "value": "warm", "priceWeight": 0, "icon": "leaf" },
         { "label": "Bold & Dynamique", "value": "bold", "priceWeight": 0, "icon": "flame" },
         { "label": "Je vous fais confiance", "value": "trust", "priceWeight": 0, "icon": "palette" }
-      ]
+      ],
+      "detailsPlaceholder": "Un site en référence ? Un lien vers un design que vous aimez ?"
     },
     {
       "id": "timeline",
-      "type": "single-choice",
+      "type": "multi-choice",
       "title": "Quand en avez-vous besoin ?",
+      "subtitle": "Sélectionnez ce qui correspond",
       "options": [
         { "label": "Dès que possible (< 2 semaines)", "value": "urgent", "priceWeight": 500, "icon": "flame" },
         { "label": "Dans le mois", "value": "month", "priceWeight": 200, "icon": "calendar-days" },
         { "label": "Pas pressé (2-3 mois)", "value": "relaxed", "priceWeight": 0, "icon": "clock" },
         { "label": "Je me renseigne juste", "value": "exploring", "priceWeight": 0, "icon": "eye" }
-      ]
+      ],
+      "detailsPlaceholder": "Une date butoir ? Un événement prévu ?"
     },
     {
       "id": "contact",

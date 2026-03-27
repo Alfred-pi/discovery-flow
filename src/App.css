@@ -294,6 +294,24 @@
   padding-left: var(--space-1);
 }
 
+/* ===== DETAILS TEXTAREA ===== */
+.details-field {
+  margin-bottom: var(--space-6);
+}
+
+.details-textarea {
+  height: auto;
+  min-height: 72px;
+  padding: var(--space-4) var(--space-5);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.step-actions {
+  display: flex;
+  flex-direction: column;
+}
+
 .contact-form .cta-btn {
   margin-top: var(--space-4);
   align-self: stretch;
