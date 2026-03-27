@@ -113,13 +113,41 @@ app.post('/api/submit', limiter, async (req, res) => {
 
     console.log(`[SUCCESS] Submission saved: ${filename}`);
 
-    // Send Telegram notification
-    const contactData = validated.answers.contact 
-      ? JSON.parse(validated.answers.contact) 
-      : {};
-    const telegramMsg = `🎉 **New Discovery Flow Submission**\n\nFile: \`${filename}\`\nContact: ${contactData.name || 'Unknown'} (${contactData.email || 'no-email'})\nLanguage: ${validated.language || 'fr'}\n\nReady for you at: \`~/Repos/workspace/perso/discovery-flow/submissions/${filename}\``;
-    
-    console.log(`[NOTIFY] ${telegramMsg}`);
+    // Send Telegram notification with file
+    try {
+      const contactData = validated.answers.contact 
+        ? JSON.parse(validated.answers.contact) 
+        : {};
+      
+      const botToken = process.env.TELEGRAM_BOT_TOKEN;
+      const chatId = process.env.TELEGRAM_CHAT_ID;
+      
+      if (botToken && chatId) {
+        const caption = `📋 *Nouvelle soumission Discovery Flow*\n\n👤 ${contactData.name || 'Inconnu'}\n📧 ${contactData.email || 'pas d\'email'}\n🌐 ${validated.language || 'fr'}\n📅 ${new Date().toLocaleString('fr-CH')}`;
+        
+        // Send file as document via Telegram Bot API (using Blob + native FormData)
+        const { Blob } = await import('buffer');
+        const form = new FormData();
+        form.append('chat_id', chatId);
+        form.append('document', new Blob([content], { type: 'text/markdown' }), filename);
+        form.append('caption', caption);
+        form.append('parse_mode', 'Markdown');
+        
+        const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+          method: 'POST',
+          body: form,
+        });
+        
+        const tgData = await tgRes.json();
+        if (tgData.ok) {
+          console.log(`[TELEGRAM] Notification sent to chat ${chatId}`);
+        } else {
+          console.warn(`[TELEGRAM] Failed: ${tgData.description}`);
+        }
+      }
+    } catch (tgError) {
+      console.warn(`[TELEGRAM] Error: ${tgError.message}`);
+    }
 
     res.json({ 
       success: true, 
