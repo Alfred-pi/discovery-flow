@@ -1,73 +1,80 @@
-# React + TypeScript + Vite
+# Discovery Flow v3
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Formulaire de découverte multi-langue (FR/EN) avec authentification + dashboard admin.
 
-Currently, two official plugins are available:
+## 🌐 URLs
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Client Form**: https://alfred-pi.github.io/discovery-flow/
+- **Admin Dashboard**: http://100.84.147.44:3001/admin (Tailscale uniquement)
 
-## React Compiler
+## 🔐 Accès
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Client (Form)
+- **Code d'accès**: `BLUE47`
 
-## Expanding the ESLint configuration
+### Admin (Dashboard)
+- **Mot de passe**: `***REMOVED***`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Démarrage
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Frontend (Dev)
+```bash
+npm run dev -- --host --port 4070
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Backend (Express)
+```bash
+cd backend
+npm run dev
+```
+Port 3001 (accessible via Tailscale `100.84.147.44:3001`)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Deploy Frontend
+```bash
+npm run deploy
+```
+Build + push vers GitHub Pages (`alfred-pi.github.io/discovery-flow`)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📂 Fichiers Submissions
+
+Les réponses clients sont sauvegardées dans:
+```
+submissions/YYYY-MM-DDTHH-mm-ss.md
+```
+
+Format markdown propre, prêt à traffer.
+
+## 🔒 Sécurité
+
+- Code d'accès `BLUE47` protège le formulaire (sessionStorage)
+- Backend sécurisé: JWT token + rate limit (5/h) + CORS strict + Helmet + Zod validation
+- Port 3001 accessible UNIQUEMENT via Tailscale (pas internet public)
+- Fichiers submissions: `chmod 600`
+
+## 🎨 Features
+
+- **Multi-langue**: FR/EN avec toggle
+- **Multi-choix**: Toutes les questions permettent sélections multiples
+- **Textarea détails**: Champ "Précisez" sous chaque question
+- **Voice input**: Web Speech API gratuit (Chrome/Safari)
+- **Admin dashboard**: Liste submissions + modal détails
+- **Dark mode**: Design zinc/indigo professionnel
+
+## 📝 Stack
+
+**Frontend**: React 19 + Vite 8 + Framer Motion + Lucide + Tailwind-free CSS  
+**Backend**: Express + Helmet + Zod + Rate Limit + CORS  
+**Deploy**: GitHub Pages + Backend Pi (Tailscale)
+
+## 🛠️ Maintenance
+
+**Voir les logs backend**:
+```bash
+cd ~/Repos/workspace/perso/discovery-flow/backend
+pm2 logs discovery-flow
+```
+
+**Restart backend**:
+```bash
+pm2 restart discovery-flow
 ```
