@@ -16,9 +16,17 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-// Security middleware
-app.use(helmet());
+// Security middleware (CSP adjusted for inline scripts in admin)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "script-src": ["'self'", "'unsafe-inline'"],
+    },
+  },
+}));
 app.use(cors({
   origin: process.env.ALLOWED_ORIGIN || 'https://alfred-pi.github.io',
   credentials: true,
@@ -132,6 +140,93 @@ app.post('/api/submit', limiter, async (req, res) => {
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Admin dashboard
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Admin auth
+app.post('/api/admin/auth', (req, res) => {
+  const { password } = req.body;
+  if (password === ADMIN_PASSWORD) {
+    res.json({ token: ADMIN_PASSWORD }); // Simple token = password
+  } else {
+    res.status(401).json({ error: 'Invalid password' });
+  }
+});
+
+// Admin middleware
+const adminAuth = (req, res, next) => {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const token = auth.split(' ')[1];
+  if (token !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+  next();
+};
+
+// List submissions
+app.get('/api/admin/list', adminAuth, async (req, res) => {
+  try {
+    const submissionsDir = path.join(__dirname, '../submissions');
+    const files = await fs.readdir(submissionsDir);
+    
+    const submissions = await Promise.all(
+      files
+        .filter(f => f.endsWith('.md'))
+        .map(async (filename) => {
+          const filepath = path.join(submissionsDir, filename);
+          const content = await fs.readFile(filepath, 'utf-8');
+          
+          // Parse basic info
+          const dateMatch = content.match(/\*\*Date\*\*:\s*(.+)/);
+          const langMatch = content.match(/\*\*Language\*\*:\s*(.+)/);
+          const nameMatch = content.match(/"name":\s*"([^"]+)"/);
+          const emailMatch = content.match(/"email":\s*"([^"]+)"/);
+          
+          return {
+            filename,
+            date: dateMatch ? dateMatch[1].trim() : filename,
+            language: langMatch ? langMatch[1].trim() : 'fr',
+            client: nameMatch ? nameMatch[1] : 'Unknown',
+            email: emailMatch ? emailMatch[1] : 'no-email',
+          };
+        })
+    );
+    
+    // Sort by date desc
+    submissions.sort((a, b) => b.filename.localeCompare(a.filename));
+    
+    res.json({ submissions });
+  } catch (error) {
+    console.error('[ERROR] List submissions:', error.message);
+    res.status(500).json({ error: 'Failed to list submissions' });
+  }
+});
+
+// Read submission
+app.get('/api/admin/read/:filename', adminAuth, async (req, res) => {
+  try {
+    const { filename } = req.params;
+    
+    // Sanitize filename (prevent path traversal)
+    if (filename.includes('..') || filename.includes('/')) {
+      return res.status(400).json({ error: 'Invalid filename' });
+    }
+    
+    const filepath = path.join(__dirname, '../submissions', filename);
+    const content = await fs.readFile(filepath, 'utf-8');
+    
+    res.json({ content });
+  } catch (error) {
+    console.error('[ERROR] Read submission:', error.message);
+    res.status(500).json({ error: 'Failed to read submission' });
+  }
 });
 
 app.listen(PORT, '0.0.0.0', () => {

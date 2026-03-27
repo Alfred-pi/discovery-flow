@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discovery Flow Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0b;
+      --bg-elevated: #18181b;
+      --border: #27272a;
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --accent: #4f46e5;
+      --accent-hover: #6366f1;
+      --success: #22c55e;
+      --error: #ef4444;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .login-card {
+      max-width: 400px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .login-card h2 {
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: var(--accent-hover);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .error {
+      color: var(--error);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .submissions-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .submission-card {
+      padding: 1.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .submission-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow);
+    }
+
+    .submission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 0.75rem;
+    }
+
+    .submission-client {
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    .submission-date {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .submission-email {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .submission-lang {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: var(--accent);
+      color: white;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      max-width: 800px;
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .markdown-content h2 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.25rem;
+      color: var(--accent);
+    }
+
+    .markdown-content p {
+      margin-bottom: 0.5rem;
+    }
+
+    .markdown-content strong {
+      color: var(--text-primary);
+    }
+
+    .markdown-content code {
+      background: var(--bg-elevated);
+      padding: 0.125rem 0.25rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+
+    .markdown-content pre {
+      background: var(--bg-elevated);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      flex: 1;
+      padding: 1rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <h2>🔒 Admin Access</h2>
+      <input type="password" id="passwordInput" placeholder="Admin password" />
+      <button id="loginBtn">Login</button>
+      <div id="loginError" class="error hidden"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden">
+    <div class="container">
+      <h1>📋 Discovery Flow Admin</h1>
+      <p class="subtitle">Submissions dashboard</p>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-value" id="totalCount">0</div>
+          <div class="stat-label">Total Submissions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="todayCount">0</div>
+          <div class="stat-label">Today</div>
+        </div>
+      </div>
+
+      <div id="submissionsList" class="submissions-grid"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Submission</h2>
+        <button class="modal-close" id="modalClose">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="modalContent" class="markdown-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let authToken = null;
+
+    // Login
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const password = document.getElementById('passwordInput').value;
+      const errorEl = document.getElementById('loginError');
+      
+      try {
+        const res = await fetch('/api/admin/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          authToken = data.token;
+          document.getElementById('loginScreen').classList.add('hidden');
+          document.getElementById('dashboard').classList.remove('hidden');
+          loadSubmissions();
+        } else {
+          errorEl.textContent = 'Invalid password';
+          errorEl.classList.remove('hidden');
+        }
+      } catch (e) {
+        errorEl.textContent = 'Connection error';
+        errorEl.classList.remove('hidden');
+      }
+    });
+
+    // Load submissions
+    async function loadSubmissions() {
+      try {
+        const res = await fetch('/api/admin/list', {
+          headers: { 'Authorization': `Bearer ${authToken}` },
+        });
+        const data = await res.json();
+        
+        document.getElementById('totalCount').textContent = data.submissions.length;
+        
+        const today = new Date().toISOString().slice(0, 10);
+        const todayCount = data.submissions.filter(s => s.date.startsWith(today)).length;
+        document.getElementById('todayCount').textContent = todayCount;
+
+        const listEl = document.getElementById('submissionsList');
+        listEl.innerHTML = data.submissions.map(sub => `
+          <div class="submission-card" onclick="viewSubmission('${sub.filename}')">
+            <div class="submission-header">
+              <div>
+                <div class="submission-client">${sub.client || 'Unknown'}</div>
+                <div class="submission-email">${sub.email || 'no-email'}</div>
+              </div>
+              <div class="submission-date">${new Date(sub.date).toLocaleString('fr-CH')}</div>
+            </div>
+            <span class="submission-lang">${sub.language || 'fr'}</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error('Failed to load submissions:', e);
+      }
+    }
+
+    // View submission
+    async function viewSubmission(filename) {
+      try {
+        const res = await fetch(`/api/admin/read/${filename}`, {
+          headers: { 'Authorization': `Bearer ${authToken}` },
+        });
+        const data = await res.json();
+        
+        document.getElementById('modalTitle').textContent = filename;
+        document.getElementById('modalContent').innerHTML = marked.parse(data.content);
+        document.getElementById('modal').classList.add('active');
+      } catch (e) {
+        console.error('Failed to load submission:', e);
+      }
+    }
+
+    // Close modal
+    document.getElementById('modalClose').addEventListener('click', () => {
+      document.getElementById('modal').classList.remove('active');
+    });
+
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') {
+        document.getElementById('modal').classList.remove('active');
+      }
+    });
+
+    // Simple markdown parser (basic version)
+    const marked = {
+      parse: (text) => {
+        return text
+          .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+          .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/```json\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/\n/g, '<br>');
+      }
+    };
+
+    // Enter to login
+    document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('loginBtn').click();
+      }
+    });
+  </script>
+</body>
+</html>
