@@ -59,6 +59,9 @@ Format markdown propre, prêt à traffer.
 - **Voice input**: Web Speech API gratuit (Chrome/Safari)
 - **Admin dashboard**: Liste submissions + modal détails
 - **Dark mode**: Design zinc/indigo professionnel
+- **Responsive**: Mobile-first (375px) → Tablet → Desktop
+- **Questions universelles**: Site web, App web, App mobile, E-commerce, Refonte, Automation, Branding
+- **Budget**: 2'500 CHF minimum (6 fourchettes)
 
 ## 📝 Stack
 
