@@ -24,7 +24,7 @@ const API_URL = import.meta.env.PROD
 
 const JWT_SECRET = '***REMOVED***';
 
-export default function ResultStep({ answers, submitted, direction, t, language }: Props) {
+export default function ResultStep({ answers, direction, t, language }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);

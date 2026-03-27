@@ -36,7 +36,7 @@ interface Props {
   language: 'fr' | 'en';
 }
 
-export default function QuestionStep({ question, answer, onAnswer, onNext, direction, t, language }: Props) {
+export default function QuestionStep({ question, answer, onAnswer, onNext, direction }: Props) {
   const currentValue: string[] = answer?.value || answer || [];
   const currentDetails: string = answer?.details || '';
   const [localMulti, setLocalMulti] = useState<string[]>(

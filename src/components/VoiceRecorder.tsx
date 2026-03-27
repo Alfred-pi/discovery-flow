@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Square, Loader2 } from 'lucide-react';
+import { Mic, Square } from 'lucide-react';
 
 // Web Speech API types
 interface SpeechRecognitionEvent extends Event {
