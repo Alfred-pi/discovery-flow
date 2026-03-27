@@ -1,98 +1,94 @@
 {
   "fr": {
     "welcome": {
-      "title": "Créons votre site ensemble",
-      "subtitle": "Répondez à quelques questions pour me permettre de bien comprendre votre projet.",
-      "buttonText": "C'est parti →"
+      "title": "Donnons vie à votre projet",
+      "subtitle": "Quelques questions rapides pour mieux comprendre vos besoins.",
+      "buttonText": "Commencer →"
     },
-    "activity": {
-      "title": "Quelle est votre activité ?",
+    "project_type": {
+      "title": "Quel type de projet ?",
       "subtitle": "Sélectionnez une ou plusieurs réponses",
-      "detailsPlaceholder": "Décrivez votre activité en quelques mots...",
+      "detailsPlaceholder": "Précisez votre projet...",
       "options": {
-        "rental": "Location saisonnière",
-        "concierge": "Conciergerie / Gestion",
-        "restaurant": "Restaurant / Bar",
-        "ecommerce": "Commerce / E-shop",
-        "services": "Services / Freelance",
+        "website": "Site web / Landing page",
+        "webapp": "Application web",
+        "mobile": "Application mobile",
+        "ecommerce": "Boutique en ligne",
+        "redesign": "Refonte / Amélioration existante",
+        "automation": "Automatisation / Outils internes",
+        "branding": "Identité visuelle / Branding",
         "other": "Autre"
       }
     },
     "goal": {
       "title": "Quels sont vos objectifs ?",
       "subtitle": "Sélectionnez tout ce qui s'applique",
-      "detailsPlaceholder": "Des objectifs spécifiques à préciser ?",
+      "detailsPlaceholder": "Objectifs spécifiques ?",
       "options": {
-        "clients": "Avoir plus de clients / réservations",
-        "branding": "Créer une image de marque premium",
-        "seo": "Être visible sur Google",
-        "independence": "Ne plus dépendre d'Airbnb / plateformes",
-        "all": "Tout ça en même temps"
+        "clients": "Acquérir plus de clients",
+        "brand": "Renforcer l'image de marque",
+        "visibility": "Améliorer la visibilité en ligne",
+        "sales": "Augmenter les ventes",
+        "efficiency": "Gagner du temps / Automatiser",
+        "launch": "Lancer un nouveau produit/service",
+        "all": "Plusieurs de ces objectifs"
       }
     },
-    "existing_site": {
-      "title": "Avez-vous déjà un site web ?",
+    "existing": {
+      "title": "Avez-vous déjà quelque chose en place ?",
       "subtitle": "Sélectionnez ce qui correspond",
-      "detailsPlaceholder": "Lien vers votre site actuel ou précisions...",
+      "detailsPlaceholder": "Lien ou précisions...",
       "options": {
-        "none": "Non, je pars de zéro",
-        "old": "Oui, mais il est vieux / moche",
-        "upgrade": "Oui, mais je veux mieux",
-        "social_only": "J'ai juste une page Facebook/Instagram"
-      }
-    },
-    "pages": {
-      "title": "Combien de pages pour votre site ?",
-      "subtitle": "Sélectionnez ce qui vous convient",
-      "detailsPlaceholder": "Des pages spécifiques en tête ? (blog, portfolio...)",
-      "options": {
-        "1": "Une seule page (Landing Page)",
-        "3-5": "3-5 pages (Site vitrine classique)",
-        "6-10": "6-10 pages (Site complet)",
-        "unknown": "Je ne sais pas encore"
+        "nothing": "Non, je pars de zéro",
+        "outdated": "Oui, mais c'est dépassé",
+        "basic": "J'ai quelque chose de basique",
+        "partial": "J'ai des éléments séparés",
+        "social": "Juste réseaux sociaux"
       }
     },
     "features": {
-      "title": "Quelles fonctionnalités souhaitez-vous ?",
+      "title": "Quelles fonctionnalités envisagez-vous ?",
       "subtitle": "Sélectionnez tout ce qui vous intéresse",
-      "detailsPlaceholder": "D'autres fonctionnalités en tête ?",
+      "detailsPlaceholder": "Autres fonctionnalités ?",
       "options": {
+        "auth": "Connexion utilisateurs",
         "booking": "Système de réservation",
-        "multilingual": "Multilingue (2+ langues)",
-        "gallery": "Galerie photos / vidéos",
-        "chat": "Chat / WhatsApp intégré",
-        "form": "Formulaire de contact avancé",
-        "reviews": "Avis clients / témoignages",
-        "map": "Carte / localisation",
-        "mobile_app": "Application mobile"
-      }
-    },
-    "style": {
-      "title": "Quel style vous correspond ?",
-      "subtitle": "Vous pouvez en choisir plusieurs",
-      "detailsPlaceholder": "Un site en référence ? Un lien vers un design que vous aimez ?",
-      "options": {
-        "minimal": "Élégant & Minimaliste",
-        "modern": "Frais & Moderne",
-        "warm": "Naturel & Chaleureux",
-        "bold": "Bold & Dynamique",
-        "trust": "Je vous fais confiance"
+        "payment": "Paiement en ligne",
+        "multilang": "Multilingue",
+        "api": "Intégrations API / Services externes",
+        "admin": "Dashboard administrateur",
+        "analytics": "Suivi / Analytics",
+        "mobile_native": "Version mobile native",
+        "ai": "Fonctionnalités IA"
       }
     },
     "timeline": {
-      "title": "Quand en avez-vous besoin ?",
+      "title": "Quand souhaitez-vous lancer ?",
       "subtitle": "Sélectionnez ce qui correspond",
-      "detailsPlaceholder": "Une date butoir ? Un événement prévu ?",
+      "detailsPlaceholder": "Date limite ou événement ?",
       "options": {
-        "urgent": "Dès que possible (< 2 semaines)",
-        "month": "Dans le mois",
-        "relaxed": "Pas pressé (2-3 mois)",
-        "exploring": "Je me renseigne juste"
+        "urgent": "Le plus vite possible (< 1 mois)",
+        "soon": "Dans les 2-3 mois",
+        "flexible": "Pas de rush (3-6 mois)",
+        "exploring": "Je me renseigne"
+      }
+    },
+    "budget": {
+      "title": "Quel est votre budget ?",
+      "subtitle": "Sélectionnez une fourchette",
+      "detailsPlaceholder": "Budget flexible ou précisions ?",
+      "options": {
+        "small": "2'500 - 5'000 CHF",
+        "medium": "5'000 - 10'000 CHF",
+        "large": "10'000 - 20'000 CHF",
+        "xlarge": "20'000 - 50'000 CHF",
+        "enterprise": "50'000+ CHF",
+        "discuss": "À discuter"
       }
     },
     "contact": {
-      "title": "Parfait ! Où vous envoyer ma réponse ?",
-      "subtitle": "Je vous recontacterai sous 24-48h",
+      "title": "Parfait ! Comment vous recontacter ?",
+      "subtitle": "Je reviens vers vous sous 24-48h",
       "name": "Votre nom",
       "email": "votre@email.com",
       "phone": "+41 79 000 00 00 (optionnel)"
@@ -100,97 +96,93 @@
   },
   "en": {
     "welcome": {
-      "title": "Let's build your website together",
-      "subtitle": "Answer a few questions to help me understand your project.",
-      "buttonText": "Let's go →"
+      "title": "Let's bring your project to life",
+      "subtitle": "A few quick questions to better understand your needs.",
+      "buttonText": "Start →"
     },
-    "activity": {
-      "title": "What is your business?",
+    "project_type": {
+      "title": "What type of project?",
       "subtitle": "Select one or more answers",
-      "detailsPlaceholder": "Describe your business in a few words...",
+      "detailsPlaceholder": "Tell us about your project...",
       "options": {
-        "rental": "Vacation rental",
-        "concierge": "Concierge / Property management",
-        "restaurant": "Restaurant / Bar",
-        "ecommerce": "E-commerce / Shop",
-        "services": "Services / Freelance",
+        "website": "Website / Landing page",
+        "webapp": "Web application",
+        "mobile": "Mobile app",
+        "ecommerce": "Online store",
+        "redesign": "Redesign / Improve existing",
+        "automation": "Automation / Internal tools",
+        "branding": "Visual identity / Branding",
         "other": "Other"
       }
     },
     "goal": {
       "title": "What are your goals?",
       "subtitle": "Select all that apply",
-      "detailsPlaceholder": "Any specific goals to mention?",
+      "detailsPlaceholder": "Specific goals?",
       "options": {
-        "clients": "Get more clients / bookings",
-        "branding": "Create a premium brand image",
-        "seo": "Be visible on Google",
-        "independence": "Stop depending on Airbnb / platforms",
-        "all": "All of the above"
+        "clients": "Acquire more clients",
+        "brand": "Strengthen brand image",
+        "visibility": "Improve online visibility",
+        "sales": "Increase sales",
+        "efficiency": "Save time / Automate",
+        "launch": "Launch a new product/service",
+        "all": "Multiple goals"
       }
     },
-    "existing_site": {
-      "title": "Do you already have a website?",
+    "existing": {
+      "title": "Do you have something in place?",
       "subtitle": "Select what applies",
-      "detailsPlaceholder": "Link to your current site or details...",
+      "detailsPlaceholder": "Link or details...",
       "options": {
-        "none": "No, starting from scratch",
-        "old": "Yes, but it's old / ugly",
-        "upgrade": "Yes, but I want better",
-        "social_only": "I only have Facebook/Instagram"
-      }
-    },
-    "pages": {
-      "title": "How many pages for your site?",
-      "subtitle": "Select what fits",
-      "detailsPlaceholder": "Specific pages in mind? (blog, portfolio...)",
-      "options": {
-        "1": "Single page (Landing Page)",
-        "3-5": "3-5 pages (Classic website)",
-        "6-10": "6-10 pages (Complete site)",
-        "unknown": "I don't know yet"
+        "nothing": "No, starting from scratch",
+        "outdated": "Yes, but it's outdated",
+        "basic": "I have something basic",
+        "partial": "I have separate elements",
+        "social": "Only social media"
       }
     },
     "features": {
-      "title": "What features do you need?",
+      "title": "What features are you considering?",
       "subtitle": "Select all you're interested in",
-      "detailsPlaceholder": "Any other features in mind?",
+      "detailsPlaceholder": "Other features?",
       "options": {
+        "auth": "User login",
         "booking": "Booking system",
-        "multilingual": "Multilingual (2+ languages)",
-        "gallery": "Photo / video gallery",
-        "chat": "Chat / WhatsApp integration",
-        "form": "Advanced contact form",
-        "reviews": "Customer reviews / testimonials",
-        "map": "Map / location",
-        "mobile_app": "Mobile application"
-      }
-    },
-    "style": {
-      "title": "What style fits you?",
-      "subtitle": "You can choose multiple",
-      "detailsPlaceholder": "Any website reference? A link to a design you like?",
-      "options": {
-        "minimal": "Elegant & Minimal",
-        "modern": "Fresh & Modern",
-        "warm": "Natural & Warm",
-        "bold": "Bold & Dynamic",
-        "trust": "I trust you"
+        "payment": "Online payment",
+        "multilang": "Multilingual",
+        "api": "API integrations / External services",
+        "admin": "Admin dashboard",
+        "analytics": "Tracking / Analytics",
+        "mobile_native": "Native mobile version",
+        "ai": "AI features"
       }
     },
     "timeline": {
-      "title": "When do you need it?",
+      "title": "When do you want to launch?",
       "subtitle": "Select what applies",
-      "detailsPlaceholder": "Any deadline? Upcoming event?",
+      "detailsPlaceholder": "Deadline or event?",
       "options": {
-        "urgent": "ASAP (< 2 weeks)",
-        "month": "Within a month",
-        "relaxed": "No rush (2-3 months)",
+        "urgent": "ASAP (< 1 month)",
+        "soon": "Within 2-3 months",
+        "flexible": "No rush (3-6 months)",
         "exploring": "Just exploring"
       }
     },
+    "budget": {
+      "title": "What is your budget?",
+      "subtitle": "Select a range",
+      "detailsPlaceholder": "Flexible budget or details?",
+      "options": {
+        "small": "CHF 2'500 - 5'000",
+        "medium": "CHF 5'000 - 10'000",
+        "large": "CHF 10'000 - 20'000",
+        "xlarge": "CHF 20'000 - 50'000",
+        "enterprise": "CHF 50'000+",
+        "discuss": "Open to discuss"
+      }
+    },
     "contact": {
-      "title": "Perfect! Where should I send my response?",
+      "title": "Perfect! How can I reach you?",
       "subtitle": "I'll get back to you within 24-48h",
       "name": "Your name",
       "email": "your@email.com",

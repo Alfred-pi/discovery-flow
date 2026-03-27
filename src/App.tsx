@@ -18,13 +18,12 @@ type Language = 'fr' | 'en';
 // Question structure with icons
 const questionStructure = [
   { id: 'welcome', type: 'intro' },
-  { id: 'activity', type: 'multi-choice', icons: { rental: 'home', concierge: 'building', restaurant: 'utensils-crossed', ecommerce: 'shopping-bag', services: 'briefcase', other: 'box' } },
-  { id: 'goal', type: 'multi-choice', icons: { clients: 'target', branding: 'sparkles', seo: 'search', independence: 'unlink', all: 'rocket' } },
-  { id: 'existing_site', type: 'multi-choice', icons: { none: 'plus-circle', old: 'alert-triangle', upgrade: 'arrow-up-circle', social_only: 'smartphone' } },
-  { id: 'pages', type: 'multi-choice', icons: { '1': 'file', '3-5': 'files', '6-10': 'layout-grid', unknown: 'help-circle' } },
-  { id: 'features', type: 'multi-choice', icons: { booking: 'calendar', multilingual: 'globe', gallery: 'image', chat: 'message-circle', form: 'clipboard-list', reviews: 'star', map: 'map-pin', mobile_app: 'smartphone' } },
-  { id: 'style', type: 'multi-choice', icons: { minimal: 'minus', modern: 'zap', warm: 'leaf', bold: 'flame', trust: 'palette' } },
-  { id: 'timeline', type: 'multi-choice', icons: { urgent: 'flame', month: 'calendar-days', relaxed: 'clock', exploring: 'eye' } },
+  { id: 'project_type', type: 'multi-choice', icons: { website: 'globe', webapp: 'monitor', mobile: 'smartphone', ecommerce: 'shopping-cart', redesign: 'refresh-cw', automation: 'zap', branding: 'palette', other: 'box' } },
+  { id: 'goal', type: 'multi-choice', icons: { clients: 'users', brand: 'award', visibility: 'eye', sales: 'trending-up', efficiency: 'clock', launch: 'rocket', all: 'target' } },
+  { id: 'existing', type: 'multi-choice', icons: { nothing: 'plus-circle', outdated: 'alert-triangle', basic: 'file', partial: 'layers', social: 'share-2' } },
+  { id: 'features', type: 'multi-choice', icons: { auth: 'lock', booking: 'calendar', payment: 'credit-card', multilang: 'globe', api: 'link', admin: 'settings', analytics: 'bar-chart', mobile_native: 'smartphone', ai: 'cpu' } },
+  { id: 'timeline', type: 'multi-choice', icons: { urgent: 'zap', soon: 'calendar', flexible: 'clock', exploring: 'compass' } },
+  { id: 'budget', type: 'multi-choice', icons: { small: 'circle', medium: 'circle-dot', large: 'disc', xlarge: 'target', enterprise: 'gem', discuss: 'message-circle' } },
   { id: 'contact', type: 'contact', fields: ['name', 'email', 'phone'] },
 ];
 
