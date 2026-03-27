@@ -123,14 +123,7 @@ export default function ResultStep({ price, currency, label, disclaimer, submitt
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        <motion.div
-          className="result-icon"
-          initial={{ scale: 0, rotate: -30 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.2 }}
-        >
-          💎
-        </motion.div>
+        {/* No icon — clean minimal */}
 
         <motion.h1
           className="question-title"

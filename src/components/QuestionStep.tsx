@@ -24,15 +24,6 @@ const optionTransition = {
   damping: 30,
 };
 
-// Split emoji prefix from label text
-function splitEmoji(label: string): { emoji: string; text: string } {
-  const match = label.match(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F?)\s*/u);
-  if (match) {
-    return { emoji: match[1], text: label.slice(match[0].length) };
-  }
-  return { emoji: '', text: label };
-}
-
 interface Props {
   question: any;
   answer: string | string[] | undefined;
@@ -157,9 +148,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
           initial="enter"
           animate="center"
         >
-          {question.options.map((opt: any, i: number) => {
-            const { emoji, text } = splitEmoji(opt.label);
-            return (
+          {question.options.map((opt: any, i: number) => (
               <motion.button
                 key={opt.value}
                 className={`option-btn ${answer === opt.value ? 'selected' : ''}`}
@@ -169,8 +158,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
                 whileHover={{ scale: 1.015, y: -2 }}
                 whileTap={{ scale: 0.97 }}
               >
-                {emoji && <span className="option-emoji">{emoji}</span>}
-                <span className="option-label">{text}</span>
+                <span className="option-label">{opt.label}</span>
                 <kbd style={{
                   minWidth: 20, height: 20, padding: '0 6px',
                   background: 'var(--surface)', border: '1px solid var(--border)',
@@ -180,8 +168,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
                   fontFamily: 'inherit', flexShrink: 0
                 }}>{i + 1}</kbd>
               </motion.button>
-            );
-          })}
+          ))}
         </motion.div>
       )}
 
@@ -193,9 +180,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
             initial="enter"
             animate="center"
           >
-            {question.options.map((opt: any) => {
-              const { emoji, text } = splitEmoji(opt.label);
-              return (
+            {question.options.map((opt: any) => (
                 <motion.button
                   key={opt.value}
                   className={`option-btn ${localMulti.includes(opt.value) ? 'selected' : ''}`}
@@ -205,8 +190,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
                   whileHover={{ scale: 1.015, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  {emoji && <span className="option-emoji">{emoji}</span>}
-                  <span className="option-label">{text}</span>
+                  <span className="option-label">{opt.label}</span>
                   {localMulti.includes(opt.value) && (
                     <motion.span
                       className="check"
@@ -218,8 +202,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
                     </motion.span>
                   )}
                 </motion.button>
-              );
-            })}
+            ))}
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
