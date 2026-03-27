@@ -105,9 +105,13 @@ app.post('/api/submit', limiter, async (req, res) => {
 
     console.log(`[SUCCESS] Submission saved: ${filename}`);
 
-    // TODO: Notify via Telegram (Alfred will handle this)
-    // For now, just log
-    console.log(`[NOTIFY] New submission ready at ${filepath}`);
+    // Send Telegram notification
+    const contactData = validated.answers.contact 
+      ? JSON.parse(validated.answers.contact) 
+      : {};
+    const telegramMsg = `🎉 **New Discovery Flow Submission**\n\nFile: \`${filename}\`\nContact: ${contactData.name || 'Unknown'} (${contactData.email || 'no-email'})\nLanguage: ${validated.language || 'fr'}\n\nReady for you at: \`~/Repos/workspace/perso/discovery-flow/submissions/${filename}\``;
+    
+    console.log(`[NOTIFY] ${telegramMsg}`);
 
     res.json({ 
       success: true, 
