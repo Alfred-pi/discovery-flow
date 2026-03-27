@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Moon, Sun } from 'lucide-react';
 
 function getInitialTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
@@ -31,8 +32,9 @@ export default function ThemeToggle() {
         animate={{ scale: 1, rotate: 0, opacity: 1 }}
         exit={{ scale: 0, rotate: 90, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        {theme === 'light' ? '🌙' : '☀️'}
+        {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
       </motion.span>
     </motion.button>
   );
