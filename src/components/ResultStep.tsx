@@ -1,208 +1,133 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import type { Answers } from '../App';
+import { CheckCircle2, Send, Loader2, AlertCircle } from 'lucide-react';
+
+const pageVariants = {
+  enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir > 0 ? -40 : 40, opacity: 0 }),
+};
 
 interface Props {
-  price: number;
-  currency: string;
-  label: string;
-  disclaimer: string;
+  answers: any;
+  onSubmit: () => Promise<void>;
   submitted: boolean;
-  onSubmit: () => void;
-  answers: Answers;
   direction: number;
+  t: any;
+  language: 'fr' | 'en';
 }
 
-function formatPrice(price: number, currency: string) {
-  return new Intl.NumberFormat('fr-CH', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price);
-}
+// Backend endpoint (Tailscale)
+const API_URL = import.meta.env.PROD 
+  ? 'http://100.84.147.44:3001/api/submit'
+  : 'http://localhost:3001/api/submit';
 
-function AnimatedPrice({ value, currency }: { value: number; currency: string }) {
-  const [display, setDisplay] = useState(0);
+const JWT_SECRET = '***REMOVED***';
 
-  useEffect(() => {
-    const duration = 1200;
-    const steps = 30;
-    const stepTime = duration / steps;
-    const increment = value / steps;
-    let current = 0;
-    let step = 0;
+export default function ResultStep({ answers, submitted, direction, t, language }: Props) {
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
-    const timer = setInterval(() => {
-      step++;
-      current = Math.round(Math.min(increment * step, value));
-      setDisplay(current);
-      if (step >= steps) clearInterval(timer);
-    }, stepTime);
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    setError(false);
 
-    return () => clearInterval(timer);
-  }, [value]);
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: JWT_SECRET,
+          answers,
+          timestamp: new Date().toISOString(),
+          language,
+        }),
+      });
 
-  return <span>{formatPrice(display, currency)}</span>;
-}
-
-const PARTICLE_COLORS = [
-  '#4f46e5',
-  '#7c3aed',
-  '#06b6d4',
-  '#10b981',
-  '#f59e0b',
-  '#ef4444',
-];
-
-function Particles() {
-  const particles = Array.from({ length: 24 }, (_, i) => {
-    const angle = (i / 24) * 360;
-    const distance = 120 + Math.random() * 180;
-    const x = Math.cos((angle * Math.PI) / 180) * distance;
-    const y = Math.sin((angle * Math.PI) / 180) * distance;
-    const size = 4 + Math.random() * 8;
-    const color = PARTICLE_COLORS[i % PARTICLE_COLORS.length];
-
-    return (
-      <motion.div
-        key={i}
-        className="particle"
-        style={{
-          width: size,
-          height: size,
-          background: color,
-          left: '50%',
-          top: '40%',
-          marginLeft: -size / 2,
-          marginTop: -size / 2,
-          borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-        }}
-        initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-        animate={{
-          opacity: [1, 1, 0],
-          x: [0, x * 0.6, x],
-          y: [0, y * 0.6 - 20, y + 40],
-          scale: [1, 1.2, 0],
-        }}
-        transition={{
-          duration: 1.2 + Math.random() * 0.6,
-          delay: Math.random() * 0.3,
-          ease: [0.25, 0.1, 0.25, 1],
-        }}
-      />
-    );
-  });
-
-  return <div className="particles-container">{particles}</div>;
-}
-
-export default function ResultStep({ price, currency, label, disclaimer, submitted, onSubmit }: Props) {
-  const [showParticles, setShowParticles] = useState(true);
-
-  const range = {
-    low: Math.round(price * 0.85),
-    high: Math.round(price * 1.15),
+      if (response.ok) {
+        setSuccess(true);
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch (e) {
+      console.error('Submission error:', e);
+      setError(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const hideParticles = useCallback(() => {
-    setShowParticles(false);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(hideParticles, 2500);
-    return () => clearTimeout(timer);
-  }, [hideParticles]);
-
   return (
-    <>
-      {showParticles && <Particles />}
-      <motion.div
-        className="step result-step"
-        initial={{ opacity: 0, y: 30, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-      >
-        {/* No icon — clean minimal */}
-
-        <motion.h1
-          className="question-title"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-        >
-          {label}
-        </motion.h1>
-
+    <motion.div
+      className="step result-step"
+      custom={direction}
+      variants={pageVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {success ? (
         <motion.div
-          className="price-display"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, type: 'spring', stiffness: 200, damping: 20 }}
+          className="success-message"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         >
-          <span className="price-range">
-            {formatPrice(range.low, currency)} – {formatPrice(range.high, currency)}
-          </span>
+          <CheckCircle2 size={64} className="success-icon" />
+          <h1 className="result-title">{t.result.sent}</h1>
+          <p className="result-message">{t.result.sentMessage}</p>
         </motion.div>
-
-        <motion.div
-          className="price-breakdown"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-        >
-          <div className="price-center">
-            <span className="price-label">Estimation centrale</span>
-            <span className="price-main">
-              <AnimatedPrice value={price} currency={currency} />
-            </span>
-          </div>
-        </motion.div>
-
-        <motion.p
-          className="disclaimer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.4 }}
-        >
-          {disclaimer}
-        </motion.p>
-
-        {!submitted ? (
+      ) : (
+        <>
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4, type: 'spring', stiffness: 200, damping: 20 }}
+            transition={{ delay: 0.05, duration: 0.3 }}
+          >
+            <h1 className="result-title">{t.result.title}</h1>
+            <p className="result-message">{t.result.message}</p>
+          </motion.div>
+
+          {error && (
+            <motion.div
+              className="error-banner"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <AlertCircle size={20} />
+              <span>{t.result.error}</span>
+            </motion.div>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
           >
             <motion.button
-              className="cta-btn submit-btn"
-              onClick={onSubmit}
-              whileHover={{ scale: 1.03, y: -2 }}
+              className="cta-btn"
+              onClick={handleSubmit}
+              disabled={submitting}
+              whileHover={{ scale: submitting ? 1 : 1.02, y: submitting ? 0 : -2 }}
               whileTap={{ scale: 0.97 }}
             >
-              Recevoir mon devis détaillé →
+              {submitting ? (
+                <>
+                  <Loader2 size={18} className="spinner" />
+                  {language === 'fr' ? 'Envoi...' : 'Sending...'}
+                </>
+              ) : (
+                <>
+                  <Send size={18} />
+                  {t.result.button}
+                </>
+              )}
             </motion.button>
           </motion.div>
-        ) : (
-          <motion.div
-            className="success-message"
-            initial={{ scale: 0.8, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          >
-            <motion.div
-              className="success-icon"
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.15 }}
-            >
-              ✅
-            </motion.div>
-            <h2>Merci !</h2>
-            <p>Vous recevrez votre devis personnalisé sous 24h.</p>
-          </motion.div>
-        )}
-      </motion.div>
-    </>
+        </>
+      )}
+    </motion.div>
   );
 }

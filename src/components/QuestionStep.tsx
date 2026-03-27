@@ -32,9 +32,11 @@ interface Props {
   onAnswer: (id: string, value: any) => void;
   onNext: () => void;
   direction: number;
+  t: any;
+  language: 'fr' | 'en';
 }
 
-export default function QuestionStep({ question, answer, onAnswer, onNext, direction }: Props) {
+export default function QuestionStep({ question, answer, onAnswer, onNext, direction, t, language }: Props) {
   const currentValue: string[] = answer?.value || answer || [];
   const currentDetails: string = answer?.details || '';
   const [localMulti, setLocalMulti] = useState<string[]>(
@@ -242,12 +244,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
             <motion.input
               key={field}
               type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
-              placeholder={
-                field === 'name' ? 'Votre nom'
-                : field === 'email' ? 'votre@email.com'
-                : field === 'phone' ? '+41 79 000 00 00 (optionnel)'
-                : field
-              }
+              placeholder={question.placeholders?.[field] || field}
               value={contactData[field] || ''}
               onChange={e => handleContactChange(field, e.target.value)}
               className="input-field"

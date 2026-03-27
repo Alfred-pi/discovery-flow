@@ -1,0 +1,50 @@
+{
+  "fr": {
+    "access": {
+      "title": "Accès sécurisé",
+      "subtitle": "Entrez le code d'accès pour continuer",
+      "placeholder": "Code d'accès",
+      "button": "Accéder",
+      "error": "Code incorrect"
+    },
+    "nav": {
+      "back": "← Retour"
+    },
+    "result": {
+      "title": "Merci pour votre demande !",
+      "message": "Je vais prendre connaissance de vos informations et vous recontacter sous 24 à 48 heures.",
+      "button": "Envoyer ma demande",
+      "sent": "Demande envoyée !",
+      "sentMessage": "Vous recevrez une réponse rapidement.",
+      "error": "Une erreur est survenue. Veuillez réessayer."
+    },
+    "keyboard": {
+      "press": "Appuyez sur",
+      "enter": "Entrée"
+    }
+  },
+  "en": {
+    "access": {
+      "title": "Secure Access",
+      "subtitle": "Enter the access code to continue",
+      "placeholder": "Access code",
+      "button": "Access",
+      "error": "Incorrect code"
+    },
+    "nav": {
+      "back": "← Back"
+    },
+    "result": {
+      "title": "Thank you for your request!",
+      "message": "I will review your information and get back to you within 24 to 48 hours.",
+      "button": "Submit my request",
+      "sent": "Request submitted!",
+      "sentMessage": "You will receive a response soon.",
+      "error": "An error occurred. Please try again."
+    },
+    "keyboard": {
+      "press": "Press",
+      "enter": "Enter"
+    }
+  }
+}

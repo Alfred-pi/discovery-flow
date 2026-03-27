@@ -1,22 +1,87 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import data from './data/questions.json';
 import QuestionStep from './components/QuestionStep';
 import ResultStep from './components/ResultStep';
 import ProgressBar from './components/ProgressBar';
 import ThemeToggle from './components/ThemeToggle';
+import LanguageToggle from './components/LanguageToggle';
+import AccessGate from './components/AccessGate';
+import translations from './data/translations.json';
+import questionsI18n from './data/questions-i18n.json';
 import './App.css';
 
 export type AnswerEntry = { value: string[]; details: string } | string;
 export type Answers = Record<string, AnswerEntry>;
 
+type Language = 'fr' | 'en';
+
+// Question structure with icons
+const questionStructure = [
+  { id: 'welcome', type: 'intro' },
+  { id: 'activity', type: 'multi-choice', icons: { rental: 'home', concierge: 'building', restaurant: 'utensils-crossed', ecommerce: 'shopping-bag', services: 'briefcase', other: 'box' } },
+  { id: 'goal', type: 'multi-choice', icons: { clients: 'target', branding: 'sparkles', seo: 'search', independence: 'unlink', all: 'rocket' } },
+  { id: 'existing_site', type: 'multi-choice', icons: { none: 'plus-circle', old: 'alert-triangle', upgrade: 'arrow-up-circle', social_only: 'smartphone' } },
+  { id: 'pages', type: 'multi-choice', icons: { '1': 'file', '3-5': 'files', '6-10': 'layout-grid', unknown: 'help-circle' } },
+  { id: 'features', type: 'multi-choice', icons: { booking: 'calendar', multilingual: 'globe', gallery: 'image', chat: 'message-circle', form: 'clipboard-list', reviews: 'star', map: 'map-pin', mobile_app: 'smartphone' } },
+  { id: 'style', type: 'multi-choice', icons: { minimal: 'minus', modern: 'zap', warm: 'leaf', bold: 'flame', trust: 'palette' } },
+  { id: 'timeline', type: 'multi-choice', icons: { urgent: 'flame', month: 'calendar-days', relaxed: 'clock', exploring: 'eye' } },
+  { id: 'contact', type: 'contact', fields: ['name', 'email', 'phone'] },
+];
+
 function App() {
+  const [hasAccess, setHasAccess] = useState(false);
+  const [language, setLanguage] = useState<Language>('fr');
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [direction, setDirection] = useState(1);
   const [submitted, setSubmitted] = useState(false);
 
-  const questions = data.questions;
+  const t = (translations as any)[language];
+  const qi18n = (questionsI18n as any)[language];
+
+  // Check access on mount
+  useEffect(() => {
+    if (sessionStorage.getItem('discovery_access') === 'granted') {
+      setHasAccess(true);
+    }
+  }, []);
+
+  // Build questions from structure + i18n
+  const questions = questionStructure.map(q => {
+    const base = qi18n[q.id];
+    if (q.type === 'intro') {
+      return { ...q, ...base };
+    }
+    if (q.type === 'multi-choice') {
+      const options = Object.entries(base.options).map(([value, label]) => ({
+        value,
+        label,
+        icon: (q as any).icons?.[value] || 'circle',
+      }));
+      return {
+        ...q,
+        title: base.title,
+        subtitle: base.subtitle,
+        detailsPlaceholder: base.detailsPlaceholder,
+        options,
+      };
+    }
+    if (q.type === 'contact') {
+      return {
+        ...q,
+        title: base.title,
+        subtitle: base.subtitle,
+        fields: q.fields,
+        placeholders: {
+          name: base.name,
+          email: base.email,
+          phone: base.phone,
+        },
+      };
+    }
+    return q;
+  });
+
   const totalSteps = questions.length;
   const isResult = currentStep >= totalSteps;
 
@@ -36,51 +101,29 @@ function App() {
     }
   }, [currentStep]);
 
-  const calculatePrice = useCallback(() => {
-    let total = data.pricing.base;
-    for (const q of questions) {
-      if (q.type === 'intro' || q.type === 'contact') continue;
-      const answer = answers[q.id];
-      if (!answer) continue;
-      const opts = (q as any).options || [];
-
-      // New format: { value: string[], details: string }
-      const values: string[] = typeof answer === 'object' && 'value' in answer
-        ? (answer as any).value
-        : Array.isArray(answer) ? answer : [];
-
-      for (const a of values) {
-        const opt = opts.find((o: any) => o.value === a);
-        if (opt) total += opt.priceWeight || 0;
-      }
-    }
-    return Math.max(total, data.pricing.min);
-  }, [answers, questions]);
-
   const handleSubmit = useCallback(async () => {
     setSubmitted(true);
-    const payload = {
-      answers,
-      estimatedPrice: calculatePrice(),
-      timestamp: new Date().toISOString(),
-    };
-    console.log('Submission:', payload);
-    if (data.config.webhookUrl) {
-      try {
-        await fetch(data.config.webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-      } catch (e) {
-        console.error('Webhook failed:', e);
-      }
-    }
-  }, [answers, calculatePrice]);
+  }, []);
+
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === 'fr' ? 'en' : 'fr');
+  };
+
+  if (!hasAccess) {
+    return (
+      <div className="app">
+        <LanguageToggle language={language} onToggle={toggleLanguage} />
+        <div className="container">
+          <AccessGate onUnlock={() => setHasAccess(true)} t={t} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
       <ThemeToggle />
+      <LanguageToggle language={language} onToggle={toggleLanguage} />
 
       {!isResult && currentStep > 0 && (
         <ProgressBar current={currentStep} total={totalSteps} />
@@ -89,7 +132,7 @@ function App() {
       <div className="container">
         {currentStep > 0 && !isResult && (
           <button className="back-btn" onClick={back}>
-            ← Retour
+            {t.nav.back}
           </button>
         )}
 
@@ -97,14 +140,12 @@ function App() {
           {isResult ? (
             <ResultStep
               key="result"
-              price={calculatePrice()}
-              currency={(data.pricing as any).currency || data.config.currency}
-              label={data.pricing.label}
-              disclaimer={data.pricing.disclaimer}
+              answers={answers}
               submitted={submitted}
               onSubmit={handleSubmit}
-              answers={answers}
               direction={direction}
+              t={t}
+              language={language}
             />
           ) : (
             <QuestionStep
@@ -114,6 +155,8 @@ function App() {
               onAnswer={handleAnswer}
               onNext={next}
               direction={direction}
+              t={t}
+              language={language}
             />
           )}
         </AnimatePresence>
