@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Icon from './Icon';
 
 const pageVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
@@ -158,6 +159,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
                 whileHover={{ scale: 1.015, y: -2 }}
                 whileTap={{ scale: 0.97 }}
               >
+                {opt.icon && <span className="option-icon"><Icon name={opt.icon} size={20} /></span>}
                 <span className="option-label">{opt.label}</span>
                 <kbd style={{
                   minWidth: 20, height: 20, padding: '0 6px',
@@ -190,6 +192,7 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
                   whileHover={{ scale: 1.015, y: -2 }}
                   whileTap={{ scale: 0.97 }}
                 >
+                  {opt.icon && <span className="option-icon"><Icon name={opt.icon} size={20} /></span>}
                   <span className="option-label">{opt.label}</span>
                   {localMulti.includes(opt.value) && (
                     <motion.span

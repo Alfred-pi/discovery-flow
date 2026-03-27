@@ -20,12 +20,12 @@
       "type": "single-choice",
       "title": "Quelle est votre activité ?",
       "options": [
-        { "label": "Location saisonnière", "value": "rental", "priceWeight": 0 },
-        { "label": "Conciergerie / Gestion", "value": "concierge", "priceWeight": 200 },
-        { "label": "Restaurant / Bar", "value": "restaurant", "priceWeight": 100 },
-        { "label": "Commerce / E-shop", "value": "ecommerce", "priceWeight": 400 },
-        { "label": "Services / Freelance", "value": "services", "priceWeight": 0 },
-        { "label": "Autre", "value": "other", "priceWeight": 0 }
+        { "label": "Location saisonnière", "value": "rental", "priceWeight": 0, "icon": "home" },
+        { "label": "Conciergerie / Gestion", "value": "concierge", "priceWeight": 200, "icon": "building" },
+        { "label": "Restaurant / Bar", "value": "restaurant", "priceWeight": 100, "icon": "utensils-crossed" },
+        { "label": "Commerce / E-shop", "value": "ecommerce", "priceWeight": 400, "icon": "shopping-bag" },
+        { "label": "Services / Freelance", "value": "services", "priceWeight": 0, "icon": "briefcase" },
+        { "label": "Autre", "value": "other", "priceWeight": 0, "icon": "box" }
       ]
     },
     {
@@ -33,11 +33,11 @@
       "type": "single-choice",
       "title": "Quel est votre objectif principal ?",
       "options": [
-        { "label": "Avoir plus de clients / réservations", "value": "clients", "priceWeight": 0 },
-        { "label": "Créer une image de marque premium", "value": "branding", "priceWeight": 200 },
-        { "label": "Être visible sur Google", "value": "seo", "priceWeight": 300 },
-        { "label": "Ne plus dépendre d'Airbnb / plateformes", "value": "independence", "priceWeight": 100 },
-        { "label": "Tout ça en même temps", "value": "all", "priceWeight": 400 }
+        { "label": "Avoir plus de clients / réservations", "value": "clients", "priceWeight": 0, "icon": "target" },
+        { "label": "Créer une image de marque premium", "value": "branding", "priceWeight": 200, "icon": "sparkles" },
+        { "label": "Être visible sur Google", "value": "seo", "priceWeight": 300, "icon": "search" },
+        { "label": "Ne plus dépendre d'Airbnb / plateformes", "value": "independence", "priceWeight": 100, "icon": "unlink" },
+        { "label": "Tout ça en même temps", "value": "all", "priceWeight": 400, "icon": "rocket" }
       ]
     },
     {
@@ -45,10 +45,10 @@
       "type": "single-choice",
       "title": "Avez-vous déjà un site web ?",
       "options": [
-        { "label": "Non, je pars de zéro", "value": "none", "priceWeight": 0 },
-        { "label": "Oui, mais il est vieux / moche", "value": "old", "priceWeight": -200 },
-        { "label": "Oui, mais je veux mieux", "value": "upgrade", "priceWeight": -100 },
-        { "label": "J'ai juste une page Facebook/Instagram", "value": "social_only", "priceWeight": 0 }
+        { "label": "Non, je pars de zéro", "value": "none", "priceWeight": 0, "icon": "plus-circle" },
+        { "label": "Oui, mais il est vieux / moche", "value": "old", "priceWeight": -200, "icon": "alert-triangle" },
+        { "label": "Oui, mais je veux mieux", "value": "upgrade", "priceWeight": -100, "icon": "arrow-up-circle" },
+        { "label": "J'ai juste une page Facebook/Instagram", "value": "social_only", "priceWeight": 0, "icon": "smartphone" }
       ]
     },
     {
@@ -56,10 +56,10 @@
       "type": "single-choice",
       "title": "Combien de pages pour votre site ?",
       "options": [
-        { "label": "Une seule page (Landing Page)", "value": "1", "priceWeight": 0 },
-        { "label": "3-5 pages (Site vitrine classique)", "value": "3-5", "priceWeight": 400 },
-        { "label": "6-10 pages (Site complet)", "value": "6-10", "priceWeight": 900 },
-        { "label": "Je ne sais pas encore", "value": "unknown", "priceWeight": 400 }
+        { "label": "Une seule page (Landing Page)", "value": "1", "priceWeight": 0, "icon": "file" },
+        { "label": "3-5 pages (Site vitrine classique)", "value": "3-5", "priceWeight": 400, "icon": "files" },
+        { "label": "6-10 pages (Site complet)", "value": "6-10", "priceWeight": 900, "icon": "layout-grid" },
+        { "label": "Je ne sais pas encore", "value": "unknown", "priceWeight": 400, "icon": "help-circle" }
       ]
     },
     {
@@ -68,14 +68,14 @@
       "title": "Quelles fonctionnalités souhaitez-vous ?",
       "subtitle": "Sélectionnez tout ce qui vous intéresse",
       "options": [
-        { "label": "Système de réservation", "value": "booking", "priceWeight": 500 },
-        { "label": "Multilingue (2+ langues)", "value": "multilingual", "priceWeight": 300 },
-        { "label": "Galerie photos / vidéos", "value": "gallery", "priceWeight": 200 },
-        { "label": "Chat / WhatsApp intégré", "value": "chat", "priceWeight": 100 },
-        { "label": "Formulaire de contact avancé", "value": "form", "priceWeight": 100 },
-        { "label": "Avis clients / témoignages", "value": "reviews", "priceWeight": 150 },
-        { "label": "Carte / localisation", "value": "map", "priceWeight": 100 },
-        { "label": "Application mobile", "value": "mobile_app", "priceWeight": 1500 }
+        { "label": "Système de réservation", "value": "booking", "priceWeight": 500, "icon": "calendar" },
+        { "label": "Multilingue (2+ langues)", "value": "multilingual", "priceWeight": 300, "icon": "globe" },
+        { "label": "Galerie photos / vidéos", "value": "gallery", "priceWeight": 200, "icon": "image" },
+        { "label": "Chat / WhatsApp intégré", "value": "chat", "priceWeight": 100, "icon": "message-circle" },
+        { "label": "Formulaire de contact avancé", "value": "form", "priceWeight": 100, "icon": "clipboard-list" },
+        { "label": "Avis clients / témoignages", "value": "reviews", "priceWeight": 150, "icon": "star" },
+        { "label": "Carte / localisation", "value": "map", "priceWeight": 100, "icon": "map-pin" },
+        { "label": "Application mobile", "value": "mobile_app", "priceWeight": 1500, "icon": "smartphone" }
       ]
     },
     {
@@ -83,11 +83,11 @@
       "type": "single-choice",
       "title": "Quel style vous correspond ?",
       "options": [
-        { "label": "Élégant & Minimaliste", "value": "minimal", "priceWeight": 0 },
-        { "label": "Frais & Moderne", "value": "modern", "priceWeight": 0 },
-        { "label": "Naturel & Chaleureux", "value": "warm", "priceWeight": 0 },
-        { "label": "Bold & Dynamique", "value": "bold", "priceWeight": 0 },
-        { "label": "Je vous fais confiance", "value": "trust", "priceWeight": 0 }
+        { "label": "Élégant & Minimaliste", "value": "minimal", "priceWeight": 0, "icon": "minus" },
+        { "label": "Frais & Moderne", "value": "modern", "priceWeight": 0, "icon": "zap" },
+        { "label": "Naturel & Chaleureux", "value": "warm", "priceWeight": 0, "icon": "leaf" },
+        { "label": "Bold & Dynamique", "value": "bold", "priceWeight": 0, "icon": "flame" },
+        { "label": "Je vous fais confiance", "value": "trust", "priceWeight": 0, "icon": "palette" }
       ]
     },
     {
@@ -95,10 +95,10 @@
       "type": "single-choice",
       "title": "Quand en avez-vous besoin ?",
       "options": [
-        { "label": "Dès que possible (< 2 semaines)", "value": "urgent", "priceWeight": 500 },
-        { "label": "Dans le mois", "value": "month", "priceWeight": 200 },
-        { "label": "Pas pressé (2-3 mois)", "value": "relaxed", "priceWeight": 0 },
-        { "label": "Je me renseigne juste", "value": "exploring", "priceWeight": 0 }
+        { "label": "Dès que possible (< 2 semaines)", "value": "urgent", "priceWeight": 500, "icon": "flame" },
+        { "label": "Dans le mois", "value": "month", "priceWeight": 200, "icon": "calendar-days" },
+        { "label": "Pas pressé (2-3 mois)", "value": "relaxed", "priceWeight": 0, "icon": "clock" },
+        { "label": "Je me renseigne juste", "value": "exploring", "priceWeight": 0, "icon": "eye" }
       ]
     },
     {

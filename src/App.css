@@ -151,12 +151,26 @@
   transition: all var(--duration-normal) var(--ease-out);
 }
 
-.option-btn .option-emoji {
-  font-size: 22px;
-  line-height: 1;
+.option-btn .option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-secondary);
   flex-shrink: 0;
-  width: 32px;
-  text-align: center;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.option-btn.selected .option-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.option-btn:hover .option-icon {
+  color: var(--text-primary);
 }
 
 .option-btn .option-label {
