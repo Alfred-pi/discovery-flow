@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Mic, Square, Loader2 } from 'lucide-react';
 
 interface Props {
   onTranscription: (text: string) => void;
@@ -32,6 +33,8 @@ export default function VoiceRecorder({ onTranscription }: Props) {
       if (res.ok) {
         const data = await res.json();
         if (data.text) onTranscriptionRef.current(data.text);
+      } else {
+        console.error('Transcription API error:', res.status);
       }
     } catch (e) {
       console.error('Transcription failed:', e);
@@ -96,25 +99,26 @@ export default function VoiceRecorder({ onTranscription }: Props) {
       {isTranscribing ? (
         <motion.div
           key="transcribing"
-          className="voice-btn transcribing"
+          className="voice-btn voice-transcribing"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
         >
-          <span className="voice-spinner" />
+          <Loader2 size={18} className="voice-spinner-icon" />
         </motion.div>
       ) : isRecording ? (
         <motion.button
           key="recording"
           type="button"
-          className="voice-btn recording"
+          className="voice-btn voice-recording"
           onClick={stopRecording}
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           whileTap={{ scale: 0.95 }}
+          title="Arrêter l'enregistrement"
         >
           <span className="voice-timer">{formatTime(elapsed)}</span>
-          <span>&#9632;</span>
+          <Square size={14} fill="currentColor" />
         </motion.button>
       ) : (
         <motion.button
@@ -128,7 +132,7 @@ export default function VoiceRecorder({ onTranscription }: Props) {
           whileTap={{ scale: 0.95 }}
           title="Enregistrer un message vocal"
         >
-          🎙️
+          <Mic size={18} />
         </motion.button>
       )}
     </AnimatePresence>

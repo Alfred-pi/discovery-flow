@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Icon from './Icon';
+import VoiceRecorder from './VoiceRecorder';
 
 const pageVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
@@ -182,20 +183,28 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
             ))}
           </motion.div>
 
-          {/* Details textarea */}
+          {/* Details textarea + voice */}
           <motion.div
             className="details-field"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.3 }}
           >
-            <textarea
-              className="input-field details-textarea"
-              placeholder={question.detailsPlaceholder || 'Précisez si besoin...'}
-              value={details}
-              onChange={e => handleDetailsChange(e.target.value)}
-              rows={2}
-            />
+            <div className="details-row">
+              <textarea
+                className="input-field details-textarea"
+                placeholder={question.detailsPlaceholder || 'Précisez si besoin...'}
+                value={details}
+                onChange={e => handleDetailsChange(e.target.value)}
+                rows={2}
+              />
+              <VoiceRecorder
+                onTranscription={(text) => {
+                  const updated = details ? `${details} ${text}` : text;
+                  handleDetailsChange(updated);
+                }}
+              />
+            </div>
           </motion.div>
 
           <motion.div
