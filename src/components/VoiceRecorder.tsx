@@ -2,139 +2,139 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Square, Loader2 } from 'lucide-react';
 
-interface Props {
-  onTranscription: (text: string) => void;
+// Web Speech API types
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
 }
 
-export default function VoiceRecorder({ onTranscription }: Props) {
+interface Props {
+  onTranscription: (text: string) => void;
+  lang?: string;
+}
+
+function getSpeechRecognition(): (new () => any) | null {
+  const w = window as any;
+  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
+}
+
+export default function VoiceRecorder({ onTranscription, lang = 'fr-FR' }: Props) {
   const [isSupported, setIsSupported] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [interim, setInterim] = useState('');
+  const recognitionRef = useRef<any>(null);
   const onTranscriptionRef = useRef(onTranscription);
   onTranscriptionRef.current = onTranscription;
 
   useEffect(() => {
-    setIsSupported(!!navigator.mediaDevices?.getUserMedia);
+    setIsSupported(!!getSpeechRecognition());
   }, []);
 
-  const transcribe = useCallback(async (blob: Blob) => {
-    setIsTranscribing(true);
-    try {
-      const formData = new FormData();
-      formData.append('audio', blob, 'audio.webm');
-      const res = await fetch('/api/transcribe', {
-        method: 'POST',
-        body: formData,
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.text) onTranscriptionRef.current(data.text);
-      } else {
-        console.error('Transcription API error:', res.status);
+  const stop = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  }, []);
+
+  const start = useCallback(() => {
+    const SpeechRecognition = getSpeechRecognition();
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = lang;
+    recognition.interimResults = true;
+    recognition.continuous = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let finalText = '';
+      let interimText = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalText += transcript;
+        } else {
+          interimText += transcript;
+        }
       }
-    } catch (e) {
-      console.error('Transcription failed:', e);
-    } finally {
-      setIsTranscribing(false);
-    }
-  }, []);
 
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current?.state === 'recording') {
-      mediaRecorderRef.current.stop();
-    }
-    setIsRecording(false);
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
+      if (finalText) {
+        onTranscriptionRef.current(finalText.trim());
+        setInterim('');
+      } else {
+        setInterim(interimText);
+      }
+    };
 
-  const startRecording = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : 'audio/webm';
-      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
+      setInterim('');
+    };
 
-      chunksRef.current = [];
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
+    recognition.onend = () => {
+      setIsListening(false);
+      setInterim('');
+    };
 
-      mediaRecorder.onstop = () => {
-        stream.getTracks().forEach(t => t.stop());
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        transcribe(blob);
-      };
-
-      mediaRecorder.start();
-      mediaRecorderRef.current = mediaRecorder;
-      setIsRecording(true);
-      setElapsed(0);
-      timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
-    } catch {
-      console.error('Microphone access denied');
-    }
-  }, [transcribe]);
+    recognition.start();
+    recognitionRef.current = recognition;
+    setIsListening(true);
+  }, [lang]);
 
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
   }, []);
 
   if (!isSupported) return null;
 
-  const formatTime = (s: number) =>
-    `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
-
   return (
-    <AnimatePresence mode="wait">
-      {isTranscribing ? (
+    <div className="voice-wrapper">
+      <AnimatePresence mode="wait">
+        {isListening ? (
+          <motion.button
+            key="listening"
+            type="button"
+            className="voice-btn voice-recording"
+            onClick={stop}
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            whileTap={{ scale: 0.95 }}
+            title="Arrêter l'écoute"
+          >
+            <span className="voice-pulse" />
+            <Square size={14} fill="currentColor" />
+          </motion.button>
+        ) : (
+          <motion.button
+            key="idle"
+            type="button"
+            className="voice-btn"
+            onClick={start}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Dictez votre réponse"
+          >
+            <Mic size={18} />
+          </motion.button>
+        )}
+      </AnimatePresence>
+      {interim && (
         <motion.div
-          key="transcribing"
-          className="voice-btn voice-transcribing"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
+          className="voice-interim"
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
         >
-          <Loader2 size={18} className="voice-spinner-icon" />
+          {interim}
         </motion.div>
-      ) : isRecording ? (
-        <motion.button
-          key="recording"
-          type="button"
-          className="voice-btn voice-recording"
-          onClick={stopRecording}
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          whileTap={{ scale: 0.95 }}
-          title="Arrêter l'enregistrement"
-        >
-          <span className="voice-timer">{formatTime(elapsed)}</span>
-          <Square size={14} fill="currentColor" />
-        </motion.button>
-      ) : (
-        <motion.button
-          key="idle"
-          type="button"
-          className="voice-btn"
-          onClick={startRecording}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          title="Enregistrer un message vocal"
-        >
-          <Mic size={18} />
-        </motion.button>
       )}
-    </AnimatePresence>
+    </div>
   );
 }
