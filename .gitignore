@@ -29,3 +29,4 @@ backend/node_modules
 
 # Submissions (sensitive data)
 submissions/
+backend/codes.json

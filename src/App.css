@@ -811,6 +811,7 @@
   margin-bottom: var(--space-5);
 }
 
-.cta-btn .spinner {
+.cta-btn .spinner,
+.cta-btn .spin {
   animation: spin 1s linear infinite;
 }

@@ -1,26 +1,52 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock } from 'lucide-react';
+import { Lock, Loader2 } from 'lucide-react';
+
+const API_URL = import.meta.env.PROD 
+  ? 'https://100.84.147.44:3001' 
+  : 'http://localhost:3001';
 
 interface Props {
-  onUnlock: () => void;
+  onUnlock: (token: string, code: string, client: string) => void;
   t: any;
 }
-
-const ACCESS_CODE = 'BLUE47';
 
 export default function AccessGate({ onUnlock, t }: Props) {
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (code.toUpperCase() === ACCESS_CODE) {
-      sessionStorage.setItem('discovery_access', 'granted');
-      onUnlock();
-    } else {
+    if (!code.trim() || loading) return;
+    
+    setLoading(true);
+    setError(false);
+    
+    try {
+      const res = await fetch(`${API_URL}/api/verify-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code.trim() }),
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        sessionStorage.setItem('discovery_access', 'granted');
+        sessionStorage.setItem('discovery_token', data.token);
+        sessionStorage.setItem('discovery_code', code.trim().toUpperCase());
+        sessionStorage.setItem('discovery_client', data.client || '');
+        onUnlock(data.token, code.trim().toUpperCase(), data.client || '');
+      } else {
+        setError(true);
+        setTimeout(() => setError(false), 3000);
+      }
+    } catch (err) {
+      console.error('Verify error:', err);
       setError(true);
-      setTimeout(() => setError(false), 2000);
+      setTimeout(() => setError(false), 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,6 +72,7 @@ export default function AccessGate({ onUnlock, t }: Props) {
             value={code}
             onChange={e => setCode(e.target.value)}
             autoFocus
+            disabled={loading}
           />
           {error && (
             <motion.p
@@ -59,10 +86,11 @@ export default function AccessGate({ onUnlock, t }: Props) {
           <motion.button
             type="submit"
             className="cta-btn"
+            disabled={loading || !code.trim()}
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.97 }}
           >
-            {t.access.button}
+            {loading ? <Loader2 size={18} className="spin" /> : t.access.button}
           </motion.button>
         </form>
       </motion.div>

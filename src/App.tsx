@@ -34,6 +34,8 @@ function App() {
   const [answers, setAnswers] = useState<Answers>({});
   const [direction, setDirection] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+  const [sessionToken, setSessionToken] = useState('');
+  const [sessionCode, setSessionCode] = useState('');
 
   const t = (translations as any)[language];
   const qi18n = (questionsI18n as any)[language];
@@ -42,6 +44,8 @@ function App() {
   useEffect(() => {
     if (sessionStorage.getItem('discovery_access') === 'granted') {
       setHasAccess(true);
+      setSessionToken(sessionStorage.getItem('discovery_token') || '');
+      setSessionCode(sessionStorage.getItem('discovery_code') || '');
     }
   }, []);
 
@@ -108,12 +112,18 @@ function App() {
     setLanguage(prev => prev === 'fr' ? 'en' : 'fr');
   };
 
+  const handleUnlock = (token: string, code: string, _client: string) => {
+    setSessionToken(token);
+    setSessionCode(code);
+    setHasAccess(true);
+  };
+
   if (!hasAccess) {
     return (
       <div className="app">
         <LanguageToggle language={language} onToggle={toggleLanguage} />
         <div className="container">
-          <AccessGate onUnlock={() => setHasAccess(true)} t={t} />
+          <AccessGate onUnlock={handleUnlock} t={t} />
         </div>
       </div>
     );
@@ -145,6 +155,8 @@ function App() {
               direction={direction}
               t={t}
               language={language}
+              token={sessionToken}
+              code={sessionCode}
             />
           ) : (
             <QuestionStep

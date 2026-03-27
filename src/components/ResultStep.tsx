@@ -15,16 +15,15 @@ interface Props {
   direction: number;
   t: any;
   language: 'fr' | 'en';
+  token?: string;
+  code?: string;
 }
 
-// Backend endpoint (Tailscale)
 const API_URL = import.meta.env.PROD 
-  ? 'http://100.84.147.44:3001/api/submit'
+  ? 'https://100.84.147.44:3001/api/submit'
   : 'http://localhost:3001/api/submit';
 
-const JWT_SECRET = '***REMOVED***';
-
-export default function ResultStep({ answers, direction, t, language }: Props) {
+export default function ResultStep({ answers, direction, t, language, token, code }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -33,20 +32,29 @@ export default function ResultStep({ answers, direction, t, language }: Props) {
     setSubmitting(true);
     setError(false);
 
+    // Use token from session (received from verify-code)
+    const submitToken = token || sessionStorage.getItem('discovery_token') || '';
+    const submitCode = code || sessionStorage.getItem('discovery_code') || '';
+
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          token: JWT_SECRET,
+          token: submitToken,
           answers,
           timestamp: new Date().toISOString(),
           language,
+          code: submitCode,
         }),
       });
 
       if (response.ok) {
         setSuccess(true);
+        // Clear session after successful submit
+        sessionStorage.removeItem('discovery_token');
+        sessionStorage.removeItem('discovery_code');
+        sessionStorage.removeItem('discovery_client');
       } else {
         throw new Error('Submission failed');
       }
