@@ -9,6 +9,7 @@ import {
   Monitor, ShoppingCart, RefreshCw, Users, Award, TrendingUp,
   Layers, Share2, Lock, CreditCard, Link, Settings, BarChart,
   Cpu, Compass, Circle, CircleDot, Disc, Gem,
+  FileText, Camera, BookOpen, Puzzle,
   type LucideProps
 } from 'lucide-react';
 
@@ -66,6 +67,10 @@ const iconMap: Record<string, React.FC<LucideProps>> = {
   'circle-dot': CircleDot,
   'disc': Disc,
   'gem': Gem,
+  'file-text': FileText,
+  'camera': Camera,
+  'book-open': BookOpen,
+  'puzzle': Puzzle,
 };
 
 interface Props {

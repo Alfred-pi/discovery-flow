@@ -86,6 +86,19 @@
         "discuss": "À discuter"
       }
     },
+    "content": {
+      "title": "Avez-vous déjà du contenu ?",
+      "subtitle": "Sélectionnez ce dont vous disposez",
+      "detailsPlaceholder": "Précisions sur vos contenus existants...",
+      "options": {
+        "logo": "Logo / Identité visuelle",
+        "texts": "Textes / Contenus rédigés",
+        "photos": "Photos / Visuels",
+        "branding_guide": "Charte graphique",
+        "partial": "Quelques éléments épars",
+        "nothing": "Rien, je pars de zéro"
+      }
+    },
     "contact": {
       "title": "Comment vous recontacter ?",
       "subtitle": "Ces informations restent confidentielles.",
@@ -185,6 +198,19 @@
         "xlarge": "CHF 20'000 - 50'000",
         "enterprise": "CHF 50'000+",
         "discuss": "Open to discuss"
+      }
+    },
+    "content": {
+      "title": "Do you already have content?",
+      "subtitle": "Select what you have available",
+      "detailsPlaceholder": "Details about your existing content...",
+      "options": {
+        "logo": "Logo / Visual identity",
+        "texts": "Written content / Copy",
+        "photos": "Photos / Visuals",
+        "branding_guide": "Brand guidelines",
+        "partial": "A few scattered elements",
+        "nothing": "Nothing, starting from scratch"
       }
     },
     "contact": {

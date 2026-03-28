@@ -24,6 +24,7 @@ const questionStructure = [
   { id: 'features', type: 'multi-choice', icons: { auth: 'lock', booking: 'calendar', payment: 'credit-card', multilang: 'globe', api: 'link', admin: 'settings', analytics: 'bar-chart', mobile_native: 'smartphone', ai: 'cpu' } },
   { id: 'timeline', type: 'multi-choice', icons: { urgent: 'zap', soon: 'calendar', flexible: 'clock', exploring: 'compass' } },
   { id: 'budget', type: 'multi-choice', icons: { small: 'circle', medium: 'circle-dot', large: 'disc', xlarge: 'target', enterprise: 'gem', discuss: 'message-circle' } },
+  { id: 'content', type: 'multi-choice', icons: { logo: 'image', texts: 'file-text', photos: 'camera', branding_guide: 'book-open', partial: 'puzzle', nothing: 'plus-circle' } },
   { id: 'contact', type: 'contact', fields: ['name', 'email', 'phone'] },
   { id: 'comments', type: 'comments' },
 ];
