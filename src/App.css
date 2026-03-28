@@ -26,13 +26,13 @@
   transform: translateX(-50%);
   width: 800px;
   height: 600px;
-  background: radial-gradient(ellipse, rgba(79, 70, 229, 0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(37, 99, 235, 0.04) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
 [data-theme="dark"] .app::before {
-  background: radial-gradient(ellipse, rgba(129, 140, 248, 0.08) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(96, 165, 250, 0.06) 0%, transparent 70%);
 }
 
 /* ===== CONTAINER ===== */
@@ -115,7 +115,7 @@
   width: 28px;
   height: 28px;
   border-radius: var(--radius-full);
-  background: var(--accent-gradient);
+  background: var(--accent);
   color: var(--accent-text);
   font-size: 13px;
   font-weight: 700;
@@ -243,7 +243,7 @@
   width: 22px;
   height: 22px;
   border-radius: var(--radius-full);
-  background: var(--accent-gradient);
+  background: var(--accent);
   color: var(--accent-text);
   font-size: 12px;
   font-weight: 700;
@@ -259,7 +259,7 @@
   gap: var(--space-2);
   height: 48px;
   padding: 0 var(--space-6);
-  background: var(--accent-gradient);
+  background: var(--accent);
   color: var(--accent-text);
   font-size: 14px;
   font-weight: 600;
@@ -485,7 +485,7 @@
 
 .progress-fill {
   height: 100%;
-  background: var(--accent-gradient);
+  background: var(--accent);
   border-radius: 0 var(--radius-full) var(--radius-full) 0;
   position: relative;
 }
@@ -561,7 +561,7 @@
   font-size: clamp(44px, 10vw, 64px);
   font-weight: 900;
   letter-spacing: -0.04em;
-  background: var(--accent-gradient);
+  background: var(--accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
