@@ -3,8 +3,10 @@
 // Value = client name (shown after verification)
 
 const CODE_HASHES: Record<string, string> = {
-  // BLUE47 → test code
+  // BLUE47 → test
   '3aa9ed9c77239b848585634d8981b6af8ec6e93ecb1fa08f22979f4bb6988d8c': 'Test Client',
+  // SPARK73 → Marko
+  '6bfea2654cbec8fdef7824a8e53d145cdb2c091cf456f469c3fe019718f63cd9': 'Marko',
 };
 
 async function sha256(message: string): Promise<string> {
