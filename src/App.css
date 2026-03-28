@@ -653,11 +653,6 @@
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 640px) {
-  .app {
-    justify-content: flex-start;
-    padding-top: 60px;
-  }
-
   .back-btn {
     margin-bottom: var(--space-6);
   }
