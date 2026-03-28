@@ -36,7 +36,7 @@ interface Props {
   language: 'fr' | 'en';
 }
 
-export default function QuestionStep({ question, answer, onAnswer, onNext, direction }: Props) {
+export default function QuestionStep({ question, answer, onAnswer, onNext, direction, language }: Props) {
   const currentValue: string[] = answer?.value || answer || [];
   const currentDetails: string = answer?.details || '';
   const [localMulti, setLocalMulti] = useState<string[]>(
@@ -71,10 +71,33 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
     onAnswer(question.id, JSON.stringify(updated));
   };
 
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    // Allow +, digits, spaces, dashes, parens — min 8 chars
+    const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+    return /^\+?\d{8,15}$/.test(cleaned);
+  };
+
+  const getFieldError = (field: string): string | null => {
+    const val = contactData[field]?.trim();
+    if (!val) return null; // Don't show error on empty (just disable button)
+    if (field === 'email' && !validateEmail(val)) return language === 'fr' ? 'Email invalide' : 'Invalid email';
+    if (field === 'phone' && val && !validatePhone(val)) return language === 'fr' ? 'Numéro invalide' : 'Invalid number';
+    return null;
+  };
+
   const isContactValid = () => {
     if (question.type !== 'contact') return true;
-    const fields = question.fields || ['name', 'email'];
-    return fields.every((f: string) => contactData[f]?.trim());
+    const name = contactData['name']?.trim();
+    const email = contactData['email']?.trim();
+    const phone = contactData['phone']?.trim();
+    if (!name || !email) return false;
+    if (!validateEmail(email)) return false;
+    if (phone && !validatePhone(phone)) return false;
+    return true;
   };
 
   const canContinue = localMulti.length > 0 || details.trim().length > 0;
@@ -240,19 +263,28 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
           animate="center"
           variants={staggerContainer}
         >
-          {(question.fields || ['name', 'email']).map((field: string, i: number) => (
-            <motion.input
-              key={field}
-              type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
-              placeholder={question.placeholders?.[field] || field}
-              value={contactData[field] || ''}
-              onChange={e => handleContactChange(field, e.target.value)}
-              className="input-field"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + i * 0.07, type: 'spring', stiffness: 400, damping: 28 }}
-            />
-          ))}
+          {(question.fields || ['name', 'email']).map((field: string, i: number) => {
+            const error = getFieldError(field);
+            return (
+              <motion.div
+                key={field}
+                className="field-wrapper"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.07, type: 'spring', stiffness: 400, damping: 28 }}
+              >
+                <input
+                  type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
+                  placeholder={question.placeholders?.[field] || field}
+                  value={contactData[field] || ''}
+                  onChange={e => handleContactChange(field, e.target.value)}
+                  className={`input-field ${error ? 'input-error' : ''}`}
+                  inputMode={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
+                />
+                {error && <span className="field-error">{error}</span>}
+              </motion.div>
+            );
+          })}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
