@@ -20,7 +20,7 @@ interface Props {
 }
 
 const API_URL = import.meta.env.PROD 
-  ? 'https://100.84.147.44:3001/api/submit'
+  ? 'https://alfred.taild0005a.ts.net:8443/api/submit'
   : 'http://localhost:3001/api/submit';
 
 export default function ResultStep({ answers, direction, t, language, token, code }: Props) {

@@ -127,7 +127,10 @@ app.use(helmet({
   },
 }));
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || 'https://alfred-pi.github.io',
+  origin: [
+    process.env.ALLOWED_ORIGIN || 'https://alfred-pi.github.io',
+    'https://alfred-pi.github.io',
+  ],
   credentials: true,
 }));
 app.use(express.json({ limit: '2mb' }));
@@ -457,16 +460,8 @@ app.get('/api/admin/read/:filename', adminAuth, async (req, res) => {
   }
 });
 
-// Start HTTPS server (required for GitHub Pages mixed content)
-import https from 'https';
-
-const sslOptions = {
-  key: await fs.readFile(path.join(__dirname, 'key.pem')),
-  cert: await fs.readFile(path.join(__dirname, 'cert.pem')),
-};
-
-https.createServer(sslOptions, app).listen(PORT, '0.0.0.0', () => {
-  console.log(`[BACKEND] Discovery Flow API running on HTTPS port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`[BACKEND] Discovery Flow API running on port ${PORT}`);
   console.log(`[SECURITY] CORS allowed origin: ${process.env.ALLOWED_ORIGIN}`);
   console.log(`[SECURITY] Rate limit: 5 submissions/hour, 10 code attempts/15min`);
 });

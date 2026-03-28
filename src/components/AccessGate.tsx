@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Lock, Loader2 } from 'lucide-react';
 
 const API_URL = import.meta.env.PROD 
-  ? 'https://100.84.147.44:3001' 
+  ? 'https://alfred.taild0005a.ts.net:8443' 
   : 'http://localhost:3001';
 
 interface Props {
