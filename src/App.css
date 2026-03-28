@@ -814,3 +814,39 @@
 .cta-btn .spin {
   animation: spin 1s linear infinite;
 }
+
+/* ===== SENDING SPINNER (Result page) ===== */
+.sending-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.sending-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+
+.sending-dots span:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.sending-dots span:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+@keyframes dot-pulse {
+  0%, 80%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}

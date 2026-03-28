@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Loader2, AlertCircle, RotateCcw } from 'lucide-react';
+import { CheckCircle2, AlertCircle, RotateCcw } from 'lucide-react';
 import { submitForm } from '../lib/formsubmit';
 
 const pageVariants = {
@@ -64,7 +64,9 @@ export default function ResultStep({ answers, direction, t, language, code }: Pr
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <Loader2 size={48} className="spinner" style={{ color: 'var(--accent)', marginBottom: '24px' }} />
+          <div className="sending-dots">
+            <span /><span /><span />
+          </div>
           <h1 className="result-title">
             {language === 'fr' ? 'Envoi en cours...' : 'Sending...'}
           </h1>
