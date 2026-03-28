@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Loader2 } from 'lucide-react';
-
-const API_URL = import.meta.env.PROD 
-  ? 'https://alfred.taild0005a.ts.net:8443' 
-  : 'http://localhost:3001';
+import { verifyCode } from '../lib/codes';
 
 interface Props {
   onUnlock: (token: string, code: string, client: string) => void;
@@ -24,25 +21,18 @@ export default function AccessGate({ onUnlock, t }: Props) {
     setError(false);
     
     try {
-      const res = await fetch(`${API_URL}/api/verify-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: code.trim() }),
-      });
+      const result = await verifyCode(code.trim());
       
-      if (res.ok) {
-        const data = await res.json();
+      if (result.valid) {
         sessionStorage.setItem('discovery_access', 'granted');
-        sessionStorage.setItem('discovery_token', data.token);
         sessionStorage.setItem('discovery_code', code.trim().toUpperCase());
-        sessionStorage.setItem('discovery_client', data.client || '');
-        onUnlock(data.token, code.trim().toUpperCase(), data.client || '');
+        sessionStorage.setItem('discovery_client', result.client);
+        onUnlock('', code.trim().toUpperCase(), result.client);
       } else {
         setError(true);
         setTimeout(() => setError(false), 3000);
       }
-    } catch (err) {
-      console.error('Verify error:', err);
+    } catch {
       setError(true);
       setTimeout(() => setError(false), 3000);
     } finally {

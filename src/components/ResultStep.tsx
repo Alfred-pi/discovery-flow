@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Send, Loader2, AlertCircle } from 'lucide-react';
+import { submitForm } from '../lib/formsubmit';
 
 const pageVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
@@ -19,11 +20,7 @@ interface Props {
   code?: string;
 }
 
-const API_URL = import.meta.env.PROD 
-  ? 'https://alfred.taild0005a.ts.net:8443/api/submit'
-  : 'http://localhost:3001/api/submit';
-
-export default function ResultStep({ answers, direction, t, language, token, code }: Props) {
+export default function ResultStep({ answers, direction, t, language, code }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -32,32 +29,20 @@ export default function ResultStep({ answers, direction, t, language, token, cod
     setSubmitting(true);
     setError(false);
 
-    // Use token from session (received from verify-code)
-    const submitToken = token || sessionStorage.getItem('discovery_token') || '';
     const submitCode = code || sessionStorage.getItem('discovery_code') || '';
+    const client = sessionStorage.getItem('discovery_client') || '';
 
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          token: submitToken,
-          answers,
-          timestamp: new Date().toISOString(),
-          language,
-          code: submitCode,
-        }),
+      await submitForm({
+        answers,
+        language,
+        code: submitCode,
+        client,
       });
-
-      if (response.ok) {
-        setSuccess(true);
-        // Clear session after successful submit
-        sessionStorage.removeItem('discovery_token');
-        sessionStorage.removeItem('discovery_code');
-        sessionStorage.removeItem('discovery_client');
-      } else {
-        throw new Error('Submission failed');
-      }
+      
+      setSuccess(true);
+      sessionStorage.removeItem('discovery_code');
+      sessionStorage.removeItem('discovery_client');
     } catch (e) {
       console.error('Submission error:', e);
       setError(true);
