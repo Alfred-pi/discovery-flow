@@ -660,6 +660,42 @@
   .keyboard-hint {
     display: none;
   }
+
+  .step-actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-4);
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    z-index: 50;
+  }
+
+  .step-actions .cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Add bottom padding to step so content isn't hidden behind fixed button */
+  .step {
+    padding-bottom: 80px;
+  }
+
+  /* Contact form submit button fixed too */
+  .contact-form .cta-btn {
+    position: fixed;
+    bottom: var(--space-4);
+    left: var(--space-4);
+    right: var(--space-4);
+    width: calc(100% - 32px);
+    justify-content: center;
+    z-index: 50;
+  }
+
+  .contact-form {
+    padding-bottom: 80px;
+  }
 }
 
 /* ===== ACCESS GATE ===== */
