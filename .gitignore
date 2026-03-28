@@ -30,3 +30,5 @@ backend/node_modules
 # Submissions (sensitive data)
 submissions/
 backend/codes.json
+backend/key.pem
+backend/cert.pem
