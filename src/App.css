@@ -79,6 +79,10 @@
   transform: scale(0.92);
 }
 
+.theme-toggle svg {
+  color: var(--text-primary);
+}
+
 /* ===== BACK BUTTON ===== */
 .back-btn {
   display: inline-flex;
