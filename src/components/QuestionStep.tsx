@@ -297,10 +297,51 @@ export default function QuestionStep({ question, answer, onAnswer, onNext, direc
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.97 }}
             >
-              Voir mon estimation →
+              {language === 'fr' ? 'Continuer →' : 'Continue →'}
             </motion.button>
           </motion.div>
         </motion.div>
+      )}
+
+      {question.type === 'comments' && (
+        <>
+          <motion.div
+            className="comments-field"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.3 }}
+          >
+            <textarea
+              className="input-field details-textarea comments-textarea"
+              placeholder={question.placeholder || ''}
+              value={details}
+              onChange={e => {
+                setDetails(e.target.value);
+                onAnswer(question.id, e.target.value);
+              }}
+              rows={5}
+            />
+          </motion.div>
+
+          <motion.div
+            className="step-actions"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, type: 'spring', stiffness: 300, damping: 25 }}
+          >
+            <motion.button
+              className="cta-btn"
+              onClick={onNext}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              {question.buttonText || (language === 'fr' ? 'Envoyer ma demande' : 'Submit my request')}
+            </motion.button>
+            <p className="skip-hint" onClick={onNext} style={{ marginTop: '12px', color: 'var(--text-tertiary)', fontSize: '14px', cursor: 'pointer' }}>
+              {language === 'fr' ? 'Passer cette étape' : 'Skip this step'}
+            </p>
+          </motion.div>
+        </>
       )}
     </motion.div>
   );

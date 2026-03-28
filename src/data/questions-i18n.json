@@ -87,11 +87,17 @@
       }
     },
     "contact": {
-      "title": "Parfait ! Comment vous recontacter ?",
-      "subtitle": "Je reviens vers vous sous 24-48h",
+      "title": "Comment vous recontacter ?",
+      "subtitle": "Ces informations restent confidentielles.",
       "name": "Votre nom",
       "email": "votre@email.com",
       "phone": "+41 79 000 00 00 (optionnel)"
+    },
+    "comments": {
+      "title": "Un dernier mot ?",
+      "subtitle": "Liens, documents, inspirations, contraintes... tout ce qui peut aider.",
+      "placeholder": "Ajoutez vos commentaires, liens ou informations complémentaires...",
+      "buttonText": "Envoyer ma demande"
     }
   },
   "en": {
@@ -182,11 +188,17 @@
       }
     },
     "contact": {
-      "title": "Perfect! How can I reach you?",
-      "subtitle": "I'll get back to you within 24-48h",
+      "title": "How can I reach you?",
+      "subtitle": "Your information stays confidential.",
       "name": "Your name",
       "email": "your@email.com",
       "phone": "+1 234 567 8900 (optional)"
+    },
+    "comments": {
+      "title": "Anything else?",
+      "subtitle": "Links, documents, inspirations, constraints... anything that helps.",
+      "placeholder": "Add your comments, links or additional information...",
+      "buttonText": "Submit my request"
     }
   }
 }

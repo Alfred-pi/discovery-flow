@@ -25,6 +25,7 @@ const questionStructure = [
   { id: 'timeline', type: 'multi-choice', icons: { urgent: 'zap', soon: 'calendar', flexible: 'clock', exploring: 'compass' } },
   { id: 'budget', type: 'multi-choice', icons: { small: 'circle', medium: 'circle-dot', large: 'disc', xlarge: 'target', enterprise: 'gem', discuss: 'message-circle' } },
   { id: 'contact', type: 'contact', fields: ['name', 'email', 'phone'] },
+  { id: 'comments', type: 'comments' },
 ];
 
 function App() {
@@ -80,6 +81,15 @@ function App() {
           email: base.email,
           phone: base.phone,
         },
+      };
+    }
+    if (q.type === 'comments') {
+      return {
+        ...q,
+        title: base.title,
+        subtitle: base.subtitle,
+        placeholder: base.placeholder,
+        buttonText: base.buttonText,
       };
     }
     return q;
